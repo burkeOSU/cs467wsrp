@@ -4,23 +4,24 @@
 
 <h1>Login</h1>
 
-{% if error %}
-    <div>{{ error }}</div>
-{% endif %}
-
-<form action="{{ url_for('login') }}" method="POST">
-    <div>
+<form class="loginForm" action="{{ url_for('login') }}" method="POST">
+    <div class="formDiv">
         <label for="email">Email</label>
-        <input type="email" name="email" required />
+        <input type="email" id="email" name="email" required />
     </div>
     
-    <div>
+    <div class="formDiv">
         <label for="password">Password</label>
-        <input type="password" name="password" required />
+        <input type="password" id="password" name="password" required />
     </div>
 
-    <button type="submit">Sign In</button>
-
+    <div class="btnContainer">
+        <button type="submit" class="btn">Sign In</button>
+    </div>
 </form>
+
+{% if error %}
+    <div class="errorMsg">{{ error }}</div>
+{% endif %}
 
 {% endblock %}

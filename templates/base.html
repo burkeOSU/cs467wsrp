@@ -10,17 +10,17 @@
     <header>
         {% if current_user %}
         <!-- Nav bar for logged in user -->
-            <nav>
+            <nav class="navbar">
                 <a href="{{ url_for('home') }}">Home</a>
-                <a href="{{ url_for('logout') }}">Logout</a>
                 <a href="{{ url_for('database') }}">Database</a>
+                <a href="{{ url_for('logout') }}">Logout</a>
             </nav>
         {% else %}
         <!-- Nav bar when no user is logged in -->
-            <nav>
+            <nav class="navbar">
                 <a href="{{ url_for('home') }}">Home</a>
-                <a href="{{ url_for('login') }}">Login</a>
                 <a href="{{ url_for('database') }}">Database</a>
+                <a href="{{ url_for('login') }}">Login</a>
             </nav>
         {% endif %}
     </header>

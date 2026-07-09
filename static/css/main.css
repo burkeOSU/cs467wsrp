@@ -1,5 +1,90 @@
 body {
+    color: #212529;
     font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    margin: 0;
+}
+
+a {
+    color: #212529;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #d73f09;
+}
+
+h1 {
+    text-align: center;
+}
+
+main {
+    padding: 50px;
+}
+
+.btn {
+    background-color: #f7f5f5;
+    border: none;
+    border-radius: 8px;
+    color: #d73f09;
+    font-size: 16px;
+    font-weight: semi-bold;
+    padding: 10px 15px;
+}
+
+.btnContainer {
+    display: flex;
+    justify-content: center;
+}
+
+.btn:hover {
+    background-color:#e8e3e3;
+    cursor: pointer;
+}
+
+.errorMsg {
+    display: flex;
+    justify-content: center;
+    padding: 10px 0;
+}
+
+.loginForm {
+    border: 2px solid #d73f09;
+    border-radius: 8px;
+    margin: 0 auto;
+    padding: 30px;
+    width: fit-content;
+}
+
+.formDiv {
+    margin-bottom: 15px;
+}
+
+.formDiv input {
+    width: 100%;
+}
+
+.navbar {
+    background-color: #f7f5f5;
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+}
+
+.acctTable {
+    border-collapse: collapse;
+    margin: 40px auto;
+}
+
+.acctTable th {
+    width: 120px;
+    border-bottom: 2px solid #d73f09;
+}
+
+.acctTable td {
+    padding: 5px 0;
+    text-align: center;
 }
 
 footer {
