@@ -1,6 +1,5 @@
 from database import db
 from models import User, Account
-from flask.cli import with_appcontext
 from werkzeug.security import generate_password_hash
 
 USERS = [
