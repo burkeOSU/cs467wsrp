@@ -18,25 +18,14 @@
     </thead>
     <tbody>
         {% if current_user %}
-            {% if all_accts %}
-                 <!-- All data to display when logged in user is admin -->
-                {% for acct in all_accts %}
-                    <tr>
-                        <td>{{ acct.user.first_name }} {{ acct.user.last_name }}</td>
-                        <td>{{ acct.number }}</td>
-                        <td>{{ acct.balance }}</td>
-                    </tr>
-                {% endfor %}
-            {% else %}
-                <!-- Data for currently logged in user -->
-                {% for acct in current_user.account %}
-                    <tr>
-                        <td>{{ acct.name }}</td>
-                        <td>{{ acct.number }}</td>
-                        <td>{{ acct.balance }}</td>
-                    </tr>
-                {% endfor %}
-            {% endif %}
+            <!-- Data for currently logged in user -->
+            {% for acct in current_user.account %}
+                <tr>
+                    <td>{{ acct.name }}</td>
+                    <td>{{ acct.number }}</td>
+                    <td>{{ acct.balance }}</td>
+                </tr>
+            {% endfor %}
         {% else %}
         <!-- Example data to display when no user is logged in -->
             <tr>

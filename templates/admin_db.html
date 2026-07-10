@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<form class="loginForm" action="{{ url_for('admin') }}" method="GET">
+    <div class="formDiv">
+        <label for="user_id">Enter a user id:</label>
+        <input type="text" id="user_id" name="user_id" required />
+    </div>
+    <div class="btnContainer">
+        <button type="submit" class="btn">Submit</button>
+    </div>
+</form>
+
+{% if error %}
+    <div class="errorMsg">{{ error }}</div>
+{% endif %}
+
+{% if selected_user %}
+    <h1>{{selected_user.first_name}}'s Accounts</h1>
+{% endif %}
+
+{% if accts %}
+    <table class="acctTable">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Acct Number</th>
+                <th>Balance</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for acct in accts %}
+                <tr>
+                    <td>{{ acct.name }}</td>
+                    <td>{{ acct.number }}</td>
+                    <td>{{ acct.balance }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+
+{% if selected_user and not accts %}
+    <p>No account data for this user.</p>
+{% endif %}
+
+{% endblock %}

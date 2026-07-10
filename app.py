@@ -33,7 +33,7 @@ with app.app_context():
 @app.context_processor
 def set_current_user():
     user_id = session.get('user_id')
-    user = db.session.get(User, user_id) if user_id else None if user_id else None
+    user = db.session.get(User, user_id) if user_id else None
     return dict(current_user=user)
 
 # Routes
@@ -63,23 +63,34 @@ def login():
         if user and user.check_password(password):
             session["user_id"] = user.id
             session["user_fname"] = user.first_name
-            return redirect(url_for("database"))
+            if user.role == UserRole.ADMIN:
+                return redirect(url_for("admin"))
+            else:
+                return redirect(url_for("database"))
         
         return render_template("login.html", error="Invalid email or password."), 401
 
-@app.route("/database")
-def database():
-    user_id = session.get("user_id")
+@app.route("/admin")
+def admin():
+    user_id = request.args.get("user_id")
     user = db.session.get(User, user_id) if user_id else None
 
-    # Retrieve all accounts if logged in user is admin
-    all_accts = None
-    if user and user.role == UserRole.ADMIN:
-        statement = db.select(Account).options(joinedload(Account.user))
-        all_accts = db.session.scalars(statement).all()
+    if user:
+        # If user was found with matching id, get their accounts and return
+        accts = db.session.scalars(db.select(Account).where(Account.user_id == user.id)).all()
+        return render_template("admin_db.html", selected_user=user, accts=accts)
+    else:
+        if user_id:
+            # Send error message that id did not match user
+            return render_template("admin_db.html", error="No user exists with that id."), 400
+        else:
+            # Render initial page before user id selection by admin user
+            return render_template("admin_db.html")
 
+@app.route("/database")
+def database():
     # Can retrieve accounts data in template for global current user
-    return render_template("database.html", all_accts=all_accts)
+    return render_template("database.html")
 
 @app.route("/logout")
 def logout():

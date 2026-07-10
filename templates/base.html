@@ -12,7 +12,11 @@
         <!-- Nav bar for logged in user -->
             <nav class="navbar">
                 <a href="{{ url_for('home') }}">Home</a>
-                <a href="{{ url_for('database') }}">Database</a>
+                {% if current_user.role.value == "admin" %}
+                    <a href="{{ url_for('admin') }}">Database</a>
+                {% else %}
+                    <a href="{{ url_for('database') }}">Database</a>
+                {% endif %}
                 <a href="{{ url_for('logout') }}">Logout</a>
             </nav>
         {% else %}

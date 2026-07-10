@@ -23,6 +23,10 @@ main {
     padding: 50px;
 }
 
+p {
+    text-align: center;
+}
+
 .btn {
     background-color: #f7f5f5;
     border: none;
