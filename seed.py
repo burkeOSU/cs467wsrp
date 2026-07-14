@@ -48,13 +48,15 @@ ACCOUNTS = [
 
 ]
 
+
 def seed_db():
     """Seeds above data into the database on app start."""
     try:
         # First add users
         for user in USERS:
             # Check if user already exists
-            existing_user = db.session.scalars(db.select(User).where(User.email == user["email"])).first()
+            existing_user = db.session.scalars(
+                db.select(User).where(User.email == user["email"])).first()
             # If not, create user
             if not existing_user:
                 # Hash the pw before putting in the db
@@ -69,7 +71,7 @@ def seed_db():
                 )
                 # Add new user to db session
                 db.session.add(new_user)
-        
+
         # Send new users to db
         db.session.flush()
 
@@ -77,14 +79,18 @@ def seed_db():
         for acct in ACCOUNTS:
             # Check if acct already exists
             existing_acct = db.session.scalars(
-                                db.select(Account)
-                                .join(Account.user)
-                                .where(Account.number == acct["number"], User.email == acct["user_email"])
-                            ).first()
+                db.select(Account)
+                .join(Account.user)
+                .where(
+                    Account.number == acct["number"],
+                    User.email == acct["user_email"]
+                )
+            ).first()
             # If not, create acct
             if not existing_acct:
                 # Find user
-                acct_user = db.session.scalars(db.select(User).where(User.email == acct["user_email"])).first()
+                acct_user = db.session.scalars(db.select(User).where(
+                    User.email == acct["user_email"])).first()
                 # Create new acct from acct model
                 new_acct = Account(
                     number=acct["number"],
