@@ -1,5 +1,6 @@
 from flask import Flask, render_template, redirect, url_for, request, session
 from sqlalchemy.orm import joinedload
+from sqlalchemy import text
 import os
 from dotenv import load_dotenv
 from database import db
@@ -73,7 +74,13 @@ def login():
 @app.route("/admin")
 def admin():
     user_id = request.args.get("user_id")
-    user = db.session.get(User, user_id) if user_id else None
+    if user_id:
+        stmt = f"SELECT * FROM users WHERE id = '{user_id}'"
+        result = db.session.execute(text(stmt))
+        user = result.fetchone()
+    else:
+        user = None
+    # user = db.session.get(User, user_id) if user_id else None
 
     if user:
         # If user was found with matching id, get their accounts and return
