@@ -1,41 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WSRP</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-</head>
-<body>
-    <header>
-        {% if current_user %}
-        <!-- Nav bar for logged in user -->
-            <nav class="navbar">
-                <a href="{{ url_for('home') }}">Home</a>
-                {% if current_user.role.value == "admin" %}
-                    <a href="{{ url_for('admin') }}">Database</a>
-                {% else %}
-                    <a href="{{ url_for('database') }}">Database</a>
-                {% endif %}
-                <a href="{{ url_for('logout') }}">Logout</a>
-            </nav>
-        {% else %}
-        <!-- Nav bar when no user is logged in -->
-            <nav class="navbar">
-                <a href="{{ url_for('home') }}">Home</a>
-                <a href="{{ url_for('database') }}">Database</a>
-                <a href="{{ url_for('login') }}">Login</a>
-            </nav>
-        {% endif %}
-    </header>
-
-    <main>
-        {% block content %}
-        {% endblock %}
-    </main>
-
-    <footer>
-        <p>&copy; 2026 WSRP - OSU CS 467</p>
-    </footer>
-</body>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="description"
+              content="A web application demonstrating and documenting common vulnerabilities and attacks as part of a research project.">
+        <meta name="keywords"
+              content="web security, cybersecurity, vulnerabilities, web attacks, research project">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>WSRP</title>
+        <link rel="stylesheet"
+              href="{{ url_for('static', filename='css/main.css') }}">
+    </head>
+    <body>
+        <header>
+            {% if current_user %}
+                <!-- Nav bar for logged in user -->
+                <nav class="navbar">
+                    <a href="{{ url_for("home") }}">Home</a>
+                    {% if current_user.role.value == "admin" %}
+                        <a href="{{ url_for("admin") }}">Database</a>
+                    {% else %}
+                        <a href="{{ url_for("database") }}">Database</a>
+                    {% endif %}
+                    <a href="{{ url_for("logout") }}">Logout</a>
+                </nav>
+            {% else %}
+                <!-- Nav bar when no user is logged in -->
+                <nav class="navbar">
+                    <a href="{{ url_for("home") }}">Home</a>
+                    <a href="{{ url_for("database") }}">Database</a>
+                    <a href="{{ url_for("login") }}">Login</a>
+                </nav>
+            {% endif %}
+        </header>
+        <main>
+            {% block content %}
+            {% endblock content %}
+        </main>
+        <footer>
+            <p>Copyright © 2026 WSRP - OSU CS 467</p>
+        </footer>
+    </body>
 </html>
