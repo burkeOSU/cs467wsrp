@@ -164,7 +164,7 @@ def new_account():
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "GET":
-        return render_template("registration.html")
+        return render_template("register.html")
     
     if request.method == "POST":
         email = request.form.get("email").strip().lower()   # case insensitive, delete spaces
@@ -175,7 +175,7 @@ def register():
         # Ensure all attributes are present
         if not email or not first_name or not last_name or not password:
             return render_template(
-               "registration.html", error="Missing one or more fields."
+               "register.html", error="Missing one or more fields."
             ), 400
 
         # Check if user with email already exists
@@ -183,21 +183,21 @@ def register():
         user = db.session.execute(text(query), {"email": email}).fetchone()
         if user:
             return render_template(
-               "registration.html", error="A user with that email already exists."
+               "register.html", error="A user with that email already exists."
             ), 400
 
         # Encrypt the password
         password_hash = generate_password_hash(password)
 
         # Insecure stmt
-        stmt = (f"INSERT INTO users (email, first_name, last_name, password_hash)" 
-                f"VALUES ('{email}', '{first_name}', '{last_name}', '{password_hash}')")
+        stmt = (f"INSERT INTO users (email, first_name, last_name, role, password_hash)" 
+                f"VALUES ('{email}', '{first_name}', '{last_name}', 'customer', '{password_hash}')")
 
         try:
             # Insecure code
             result = db.session.execute(text(stmt))
             # Secure code
-            # db.session.execute(text(stmt), {"email": email, "first_name": first_name, "last_name": last_name, "password_hash": password_hash})
+            # db.session.execute(text(stmt), {"email": email, "first_name": first_name, "last_name": last_name, "role": "customer", "password_hash": password_hash})
             db.session.commit()
             # Retrieve newly created user info to set session variables
             new_user_id = result.lastrowid
@@ -208,7 +208,7 @@ def register():
         except:
             db.session.rollback()
             return render_template(
-                 "registration.html", error="An error occurred creating the new user."
+                 "register.html", error="An error occurred creating the new user."
             ), 500
 
 
