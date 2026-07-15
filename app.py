@@ -1,11 +1,11 @@
 from flask import Flask, render_template, redirect, url_for, request, session
-from sqlalchemy.orm import joinedload
 from sqlalchemy import text
 import os
 from dotenv import load_dotenv
 from database import db
 from models import User, Account, UserRole
 from seed import seed_db
+from werkzeug.security import generate_password_hash
 
 # For env variables
 load_dotenv()
@@ -90,6 +90,7 @@ def admin():
         user = result.fetchone()
     else:
         user = None
+    # Secure code
     # user = db.session.get(User, user_id) if user_id else None
 
     if user:
@@ -128,6 +129,12 @@ def new_account():
         number = request.form.get("number")
         balance = request.form.get("balance")
 
+        # Check that all attributes are present
+        if not name or not number or not balance:
+            return render_template(
+               "new_account.html", error="Missing one or more parameters."
+            ), 400
+
         # Allows for SQL injection to display informational error message on screen
         stmt = (f"INSERT INTO accounts (name, number, balance, user_id)" 
                 f"VALUES ('{name}', '{number}', {balance}, {user_id})")
@@ -152,6 +159,57 @@ def new_account():
             # return render_template(
             #     "new_account.html", error="An error occurred creating the new account."
             # ), 500
+
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if request.method == "GET":
+        return render_template("registration.html")
+    
+    if request.method == "POST":
+        email = request.form.get("email").strip().lower()   # case insensitive, delete spaces
+        first_name = request.form.get("first_name")
+        last_name = request.form.get("last_name")
+        password = request.form.get("password")
+
+        # Ensure all attributes are present
+        if not email or not first_name or not last_name or not password:
+            return render_template(
+               "registration.html", error="Missing one or more fields."
+            ), 400
+
+        # Check if user with email already exists
+        query = "SELECT id FROM users WHERE email = :email"
+        user = db.session.execute(text(query), {"email": email}).fetchone()
+        if user:
+            return render_template(
+               "registration.html", error="A user with that email already exists."
+            ), 400
+
+        # Encrypt the password
+        password_hash = generate_password_hash(password)
+
+        # Insecure stmt
+        stmt = (f"INSERT INTO users (email, first_name, last_name, password_hash)" 
+                f"VALUES ('{email}', '{first_name}', '{last_name}', '{password_hash}')")
+
+        try:
+            # Insecure code
+            result = db.session.execute(text(stmt))
+            # Secure code
+            # db.session.execute(text(stmt), {"email": email, "first_name": first_name, "last_name": last_name, "password_hash": password_hash})
+            db.session.commit()
+            # Retrieve newly created user info to set session variables
+            new_user_id = result.lastrowid
+            user = db.session.get(User, new_user_id)
+            session["user_id"] = user.id
+            session["user_fname"] = user.first_name
+            return redirect(url_for("accounts"))
+        except:
+            db.session.rollback()
+            return render_template(
+                 "registration.html", error="An error occurred creating the new user."
+            ), 500
 
 
 @app.route("/logout")
