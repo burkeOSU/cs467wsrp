@@ -23,6 +23,9 @@
                         <td>{{ acct.balance }}</td>
                     </tr>
                 {% endfor %}
+                <div class="btnContainer">
+                    <a href="{{ url_for("new_account") }}" class="btn">New Account</a>
+                </div>
             {% else %}
                 <!-- Example data to display when no user is logged in -->
                 <tr>
