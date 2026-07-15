@@ -1,9 +1,11 @@
 from flask import Flask, render_template, redirect, url_for, request, session
+from sqlalchemy import text
 import os
 from dotenv import load_dotenv
 from database import db
 from models import User, Account, UserRole
 from seed import seed_db
+from werkzeug.security import generate_password_hash
 
 # For env variables
 load_dotenv()
@@ -30,9 +32,8 @@ with app.app_context():
     db.create_all()
     seed_db()
 
+
 # Set up global logged in user based on session for templates to access
-
-
 @app.context_processor
 def set_current_user():
     user_id = session.get('user_id')
@@ -73,7 +74,7 @@ def login():
             if user.role == UserRole.ADMIN:
                 return redirect(url_for("admin"))
             else:
-                return redirect(url_for("database"))
+                return redirect(url_for("accounts"))
 
         return render_template(
             "login.html", error="Invalid email or password."
@@ -83,30 +84,132 @@ def login():
 @app.route("/admin")
 def admin():
     user_id = request.args.get("user_id")
-    user = db.session.get(User, user_id) if user_id else None
+    if user_id:
+        stmt = f"SELECT * FROM users WHERE id = '{user_id}'"
+        result = db.session.execute(text(stmt))
+        user = result.fetchone()
+    else:
+        user = None
+    # Secure code
+    # user = db.session.get(User, user_id) if user_id else None
 
     if user:
         # If user was found with matching id, get their accounts and return
         accts = db.session.scalars(db.select(Account).where(
             Account.user_id == user.id)).all()
         return render_template(
-            "admin_db.html", selected_user=user, accts=accts
+            "admin.html", selected_user=user, accts=accts
         )
     else:
         if user_id:
             # Send error message that id did not match user
             return render_template(
-                "admin_db.html", error="No user exists with that id."
+                "admin.html", error="No user exists with that id."
             ), 400
         else:
             # Render initial page before user id selection by admin user
-            return render_template("admin_db.html")
+            return render_template("admin.html")
 
 
-@app.route("/database")
-def database():
+@app.route("/accounts", methods=["GET"])
+def accounts():
     # Can retrieve accounts data in template for global current user
-    return render_template("database.html")
+    return render_template("accounts.html")
+
+ 
+@app.route("/new_account", methods=["GET", "POST"])
+def new_account():
+    if request.method == "GET":
+        return render_template("new_account.html")
+    
+    if request.method == "POST":
+        user_id = session.get('user_id')
+
+        name = request.form.get("name")
+        number = request.form.get("number")
+        balance = request.form.get("balance")
+
+        # Check that all attributes are present
+        if not name or not number or not balance:
+            return render_template(
+               "new_account.html", error="Missing one or more parameters."
+            ), 400
+
+        # Allows for SQL injection to display informational error message on screen
+        stmt = (f"INSERT INTO accounts (name, number, balance, user_id)" 
+                f"VALUES ('{name}', '{number}', {balance}, {user_id})")
+        
+        # Parameterized inputs to protect against SQL injection
+        # stmt = (f"INSERT INTO accounts (name, number, balance, user_id)" 
+        #         f"VALUES (:name, :number, :balance, :user_id)")
+        try:
+            # Insecure code
+            db.session.execute(text(stmt))
+            # Secure code
+            # db.session.execute(text(stmt), {"name": name, "number": number, "balance": balance, "user_id": user_id})
+            db.session.commit()
+            return redirect(url_for("accounts"))
+        except Exception as e:
+            db.session.rollback()
+            # Displays raw error message, giving valuable information to attacker
+            return render_template(
+               "new_account.html", error=str(e)
+            ), 500
+            # Displays safer generic message
+            # return render_template(
+            #     "new_account.html", error="An error occurred creating the new account."
+            # ), 500
+
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if request.method == "GET":
+        return render_template("register.html")
+    
+    if request.method == "POST":
+        email = request.form.get("email").strip().lower()   # case insensitive, delete spaces
+        first_name = request.form.get("first_name")
+        last_name = request.form.get("last_name")
+        password = request.form.get("password")
+
+        # Ensure all attributes are present
+        if not email or not first_name or not last_name or not password:
+            return render_template(
+               "register.html", error="Missing one or more fields."
+            ), 400
+
+        # Check if user with email already exists
+        query = "SELECT id FROM users WHERE email = :email"
+        user = db.session.execute(text(query), {"email": email}).fetchone()
+        if user:
+            return render_template(
+               "register.html", error="A user with that email already exists."
+            ), 400
+
+        # Encrypt the password
+        password_hash = generate_password_hash(password)
+
+        # Insecure stmt
+        stmt = (f"INSERT INTO users (email, first_name, last_name, role, password_hash)" 
+                f"VALUES ('{email}', '{first_name}', '{last_name}', 'customer', '{password_hash}')")
+
+        try:
+            # Insecure code
+            result = db.session.execute(text(stmt))
+            # Secure code
+            # db.session.execute(text(stmt), {"email": email, "first_name": first_name, "last_name": last_name, "role": "customer", "password_hash": password_hash})
+            db.session.commit()
+            # Retrieve newly created user info to set session variables
+            new_user_id = result.lastrowid
+            user = db.session.get(User, new_user_id)
+            session["user_id"] = user.id
+            session["user_fname"] = user.first_name
+            return redirect(url_for("accounts"))
+        except:
+            db.session.rollback()
+            return render_template(
+                 "register.html", error="An error occurred creating the new user."
+            ), 500
 
 
 @app.route("/logout")

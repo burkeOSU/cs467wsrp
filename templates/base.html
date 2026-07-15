@@ -18,9 +18,9 @@
                 <nav class="navbar">
                     <a href="{{ url_for("home") }}">Home</a>
                     {% if current_user.role.value == "admin" %}
-                        <a href="{{ url_for("admin") }}">Database</a>
+                        <a href="{{ url_for("admin") }}">Admin Accounts</a>
                     {% else %}
-                        <a href="{{ url_for("database") }}">Database</a>
+                        <a href="{{ url_for("accounts") }}">Accounts</a>
                     {% endif %}
                     <a href="{{ url_for("logout") }}">Logout</a>
                 </nav>
@@ -28,8 +28,9 @@
                 <!-- Nav bar when no user is logged in -->
                 <nav class="navbar">
                     <a href="{{ url_for("home") }}">Home</a>
-                    <a href="{{ url_for("database") }}">Database</a>
+                    <a href="{{ url_for("accounts") }}">Accounts</a>
                     <a href="{{ url_for("login") }}">Login</a>
+                    <a href="{{ url_for("register") }}">Register</a>
                 </nav>
             {% endif %}
         </header>
