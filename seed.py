@@ -8,21 +8,21 @@ USERS = [
         "first_name": "Admin",
         "last_name": "Istrator",
         "role": "admin",
-        "password": "adminPassword"
+        "password": "adminpassword"
     },
     {
         "email": "buzz@example.com",
         "first_name": "Buzz",
         "last_name": "Lightyear",
         "role": "customer",
-        "password": "buzzPassword"
+        "password": "buzzpassword"
     },
     {
         "email": "jessie@example.com",
         "first_name": "Jessie",
         "last_name": "Cowgirl",
         "role": "customer",
-        "password": "jessiePassword"
+        "password": "jessiepassword"
     },
 ]
 
