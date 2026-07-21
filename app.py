@@ -75,7 +75,7 @@ def login():
             "login.html", error=f"Too many failed login attempts. Please try again in {remaining} seconds."
         ), 429
         # After 30 seconds, reset lockout timer and failed attempt counter
-        else:
+        if lockout_time > 0 and lockout_time <= now:
             session["total_failed_logins"] = 0
             session["lockout_time_seconds"] = 0
 
