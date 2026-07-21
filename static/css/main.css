@@ -47,6 +47,36 @@ p {
     cursor: pointer;
 }
 
+.toggleBtnContainer {
+    background-color: #ffffff;
+    border: 1px solid #c6ccd2;
+    border-radius: 20px;
+    margin: 0 auto 20px auto;
+    padding: 5px;
+    width: fit-content;
+}
+
+.toggleBtn {
+    background-color: #ffffff;
+    border: none;
+    border-radius: 20px;
+    color: #d73f0950;
+    font-size: 1rem;
+    font-weight: bold;
+    margin: 0;
+    padding: 5px 10px;
+}
+
+.toggleBtn:hover {
+    color: #d73f09;
+    cursor: pointer;
+}
+
+.toggleBtn.selected {
+    background-color: #d73f09;
+    color: #ffffff;
+}
+
 .errorMsg {
     display: flex;
     justify-content: center;
@@ -61,8 +91,17 @@ p {
     align-items: center;
 }
 
+.directions ul {
+    list-style-type: none;
+}
+
 .directions ul li {
-    margin: 10px 0;
+    padding: 10px;
+}
+
+.warning {
+    border-left: 2px solid #d73f09;
+    background-color: #feede7;
 }
 
 .form {
@@ -86,6 +125,11 @@ p {
     display: flex;
     justify-content: space-between;
     padding: 20px;
+}
+
+.navlink {
+    min-width: 125px;
+    text-align: center;
 }
 
 .acctTable {

@@ -7,9 +7,10 @@
             <ul>
                 <li>
                     <a href="{{ url_for("register") }}">Register</a> 
-                    as a new user or login as an existing user provided in the sample data.
+                    as a new user or <a href="{{ url_for("login") }}">login</a> as an existing user provided in the sample data.
                 </li>
-                <li>Navigate to Accounts to enter and view user account data.</li>
+                <li>Navigate to <a href="{{ url_for("accounts") }}">Accounts</a> to enter and view user account data.</li>
+                <li class="warning">Warning: This site is for educational purposes. Do not store sensitive data as it could be at risk.</li>
             </ul>
             <a href="https://github.com/burkeOSU/cs467wsrp" target="_blank">GitHub</a>
         </div>
