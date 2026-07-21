@@ -74,6 +74,10 @@ def login():
             return render_template(
             "login.html", error=f"Too many failed login attempts. Please try again in {remaining} seconds."
         ), 429
+        # After 30 seconds, reset lockout timer and failed attempt counter
+        else:
+            session["total_failed_logins"] = 0
+            session["lockout_time_seconds"] = 0
 
         # Find user with specified email
         user = db.session.scalars(
