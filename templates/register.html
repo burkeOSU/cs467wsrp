@@ -1,7 +1,10 @@
+{% from 'components/macros.html' import security_toggle %}
+
 {% extends "base.html" %}
 {% block content %}
     <h1>Register</h1>
     <form class="form" action="{{ url_for("register") }}" method="post">
+        {{ security_toggle() }}
         <div class="formDiv">
             <label for="email">Email</label>
             <input type="email id="email" name="email" required />
