@@ -2,6 +2,15 @@
 {% block content %}
     <h1>New Account</h1>
     <form class="form" action="{{ url_for("new_account") }}" method="post">
+        <div class="toggleBtnContainer">
+            <button class="toggleBtn selected" type="button" data-value="vulnerable" disabled>
+                Vulnerable
+            </button>
+            <button class="toggleBtn" type="button" data-value="hardened">
+                Hardened
+            </button>
+        </div>
+        <input type="hidden" id="securityChoice" name="security_choice" value="vulnerable">
         <div class="formDiv">
             <label for="name">Name</label>
             <input type="text id="name" name="name" required />
