@@ -21,12 +21,20 @@ h1 {
     text-align: center;
 }
 
-main {
+p {
+    text-align: center;
+}
+
+.mainSection, .lowerSection {
     padding: 50px;
 }
 
-p {
-    text-align: center;
+.midSection {
+    background-color: #f7f5f5;
+    display: flex;
+    justify-content: space-evenly;
+    margin: 20px 0;
+    padding: 20px;
 }
 
 .btn {
@@ -77,6 +85,32 @@ p {
 .toggleBtn.selected {
     background-color: #d73f09;
     color: #ffffff;
+}
+
+.hintBtn {
+    background-color: #ffffff;
+    border: 2px solid #d73f09;
+    color: #212529;
+    font-weight: bold;
+}
+
+.hintBtn:hover {
+    background-color: #ffffff;
+    color: #d73f09;
+    cursor: pointer;
+}
+
+.content {
+    display: none;
+    border: 3px solid #c6ccd2;
+    border-radius: 8px;
+    padding: 20px;
+    width: 80%;
+    margin: 0 auto;
+}
+
+.content.show {
+    display: block;
 }
 
 .errorMsg {
@@ -132,6 +166,10 @@ p {
 .navlink {
     min-width: 125px;
     text-align: center;
+}
+
+.navlink:first-of-type {
+    text-align: left;
 }
 
 .acctTable {
