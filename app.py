@@ -6,6 +6,7 @@ from database import db
 from models import User, Account, UserRole
 from seed import seed_db
 from werkzeug.security import generate_password_hash
+import time
 
 # For env variables
 load_dotenv()
@@ -62,6 +63,21 @@ def login():
         # Check that all form data is present
         if not email or not password:
             return {"Error: Missing email or password."}, 400
+        
+        # # Set lockout time remaining
+        # now = int(time.time())
+        # lockout_time = session.get("lockout_time_seconds", 0)
+
+        # if lockout_time > now:
+        #     remaining = lockout_time - now
+        #     # HTTP 429 = "Too Many Requests" error
+        #     return render_template(
+        #     "login.html", error=f"Too many failed login attempts. Please try again in {remaining} seconds."
+        # ), 429
+        # # After 30 seconds, reset lockout timer and failed attempt counter
+        # if lockout_time > 0 and lockout_time <= now:
+        #     session["total_failed_logins"] = 0
+        #     session["lockout_time_seconds"] = 0
 
         # Find user with specified email
         user = db.session.scalars(
@@ -71,10 +87,24 @@ def login():
         if user and user.check_password(password):
             session["user_id"] = user.id
             session["user_fname"] = user.first_name
+            # # Successful login = reset lockout parameters
+            # session["total_failed_logins"] = 0
+            # session["lockout_time_seconds"] = 0
             if user.role == UserRole.ADMIN:
                 return redirect(url_for("admin"))
             else:
                 return redirect(url_for("accounts"))
+            
+        # # Unsuccessful login = increment total_failed_logins
+        # total_failed_logins = session.get("total_failed_logins", 0) + 1
+        # session["total_failed_logins"] = total_failed_logins
+        
+        # if total_failed_logins >=3:
+        #     session["lockout_time_seconds"] = now + 30
+        #     remaining = session["lockout_time_seconds"] - now
+        #     return render_template(
+        #     "login.html", error=f"Too many failed login attempts. Please try again in {remaining} seconds."
+        # ), 429
 
         return render_template(
             "login.html", error="Invalid email or password."
