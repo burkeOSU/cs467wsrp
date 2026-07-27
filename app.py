@@ -149,6 +149,10 @@ def accounts():
  
 @app.route("/new_account", methods=["GET", "POST"])
 def new_account():
+    # Ensure user is logged in before accessing this page
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
     if request.method == "GET":
         return render_template("new_account.html")
     
@@ -189,6 +193,54 @@ def new_account():
             # return render_template(
             #     "new_account.html", error="An error occurred creating the new account."
             # ), 500
+
+
+@app.route("/edit_account/<int:id>", methods=["GET", "POST"])
+def edit_account(id):
+    # Ensure user is logged in before accessing this page
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    if request.method == "GET":
+        account = db.session.get(Account, id)
+        if account is None:
+            return render_template("edit_account.html", error="Account not found."), 404
+        return render_template("edit_account.html", acct=account)
+
+    if request.method == "POST":
+        # Validate account id
+        account = db.session.get(Account, id)
+        if account is None:
+            return render_template("edit_account.html", error="Account not found."), 404
+        # Then get form data
+        name = request.form.get("name")
+        number = request.form.get("number")
+        balance = request.form.get("balance")
+
+        # Check that all attributes are present
+        if not name or not number or not balance:
+            return render_template(
+                "new_account.html", 
+                error="Missing one or more parameters."
+            ), 400
+
+        # Allows for SQL injection of script
+        stmt = f"UPDATE accounts SET name='{name}', number='{number}', balance={balance} WHERE id={id}"
+
+        try:
+            db.session.execute(text(stmt))
+            db.session.commit()
+            # Get updated account
+            updated_account = db.session.get(Account, id)
+            return render_template("edit_account.html", acct=updated_account, success="Account successfully updated.")
+        except Exception as e:
+            db.session.rollback()
+            print(e)
+            return render_template(
+                "edit_account.html",
+                error="An error occurred updating the account.",
+                acct=account
+            ), 500
 
 
 @app.route("/register", methods=["GET", "POST"])

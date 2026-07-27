@@ -11,6 +11,7 @@
                 <th>Name</th>
                 <th>Acct Number</th>
                 <th>Balance</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -21,10 +22,11 @@
                         <td>{{ acct.name }}</td>
                         <td>{{ acct.number }}</td>
                         <td>{{ acct.balance }}</td>
+                        <td><a href="{{ url_for('edit_account', id=acct.id) }}">&#9998;</a></td>
                     </tr>
                 {% endfor %}
                 <div class="btnContainer">
-                    <a href="{{ url_for("new_account") }}" class="btn">New Account</a>
+                    <a href="{{ url_for('new_account') }}" class="btn">New Account</a>
                 </div>
             {% else %}
                 <!-- Example data to display when no user is logged in -->

@@ -53,6 +53,13 @@ p {
     padding: 10px 0;
 }
 
+.successMsg {
+    color: #3F6C51;
+    display: flex;
+    justify-content: center;
+    padding: 10px 0;
+}
+
 .directions {
     border-top: 2px solid #d73f09;
     display: flex;
