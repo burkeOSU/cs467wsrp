@@ -1,5 +1,7 @@
 body {
     color: #212529;
+    display: flex;
+    flex-direction: column;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 16px;
     margin: 0;
@@ -19,12 +21,20 @@ h1 {
     text-align: center;
 }
 
-main {
+p {
+    text-align: center;
+}
+
+.mainSection, .lowerSection {
     padding: 50px;
 }
 
-p {
-    text-align: center;
+.midSection {
+    background-color: #f7f5f5;
+    display: flex;
+    justify-content: space-evenly;
+    margin: 20px 0;
+    padding: 20px;
 }
 
 .btn {
@@ -47,6 +57,62 @@ p {
     cursor: pointer;
 }
 
+.toggleBtnContainer {
+    background-color: #ffffff;
+    border: 1px solid #c6ccd2;
+    border-radius: 20px;
+    margin: 0 auto 20px auto;
+    padding: 5px;
+    width: fit-content;
+}
+
+.toggleBtn {
+    background-color: #ffffff;
+    border: none;
+    border-radius: 20px;
+    color: #d73f0950;
+    font-size: 1rem;
+    font-weight: bold;
+    margin: 0;
+    padding: 5px 10px;
+}
+
+.toggleBtn:hover {
+    color: #d73f09;
+    cursor: pointer;
+}
+
+.toggleBtn.selected {
+    background-color: #d73f09;
+    color: #ffffff;
+}
+
+.hintBtn {
+    background-color: #ffffff;
+    border: 2px solid #d73f09;
+    color: #212529;
+    font-weight: bold;
+}
+
+.hintBtn:hover {
+    background-color: #ffffff;
+    color: #d73f09;
+    cursor: pointer;
+}
+
+.content {
+    display: none;
+    border: 3px solid #c6ccd2;
+    border-radius: 8px;
+    padding: 20px;
+    width: 80%;
+    margin: 0 auto;
+}
+
+.content.show {
+    display: block;
+}
+
 .errorMsg {
     display: flex;
     justify-content: center;
@@ -61,8 +127,17 @@ p {
     align-items: center;
 }
 
+.directions ul {
+    list-style-type: none;
+}
+
 .directions ul li {
-    margin: 10px 0;
+    padding: 10px;
+}
+
+.warning {
+    border-left: 3px solid #d73f09;
+    background-color: #feede7;
 }
 
 .form {
@@ -88,6 +163,15 @@ p {
     padding: 20px;
 }
 
+.navlink {
+    min-width: 125px;
+    text-align: center;
+}
+
+.navlink:first-of-type {
+    text-align: left;
+}
+
 .acctTable {
     border-collapse: collapse;
     margin: 40px auto;
@@ -101,11 +185,4 @@ p {
 .acctTable td {
     padding: 5px 0;
     text-align: center;
-}
-
-footer {
-    position: absolute;
-    bottom: 0;
-    text-align: center;
-    width: 100%;
 }

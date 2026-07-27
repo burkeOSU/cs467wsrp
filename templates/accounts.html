@@ -1,44 +1,46 @@
 {% extends "base.html" %}
 {% block content %}
-    {% if current_user %}
-        <h1>{{ current_user.first_name }}'s Accounts</h1>
-    {% else %}
-        <h1>Example's Accounts</h1>
-    {% endif %}
-    <table class="acctTable">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Acct Number</th>
-                <th>Balance</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% if current_user %}
-                <!-- Data for currently logged in user -->
-                {% for acct in current_user.account %}
+    <div class="mainSection">
+        {% if current_user %}
+            <h1>{{ current_user.first_name }}'s Accounts</h1>
+        {% else %}
+            <h1>Example's Accounts</h1>
+        {% endif %}
+        <table class="acctTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Acct Number</th>
+                    <th>Balance</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if current_user %}
+                    <!-- Data for currently logged in user -->
+                    {% for acct in current_user.account %}
+                        <tr>
+                            <td>{{ acct.name }}</td>
+                            <td>{{ acct.number }}</td>
+                            <td>{{ acct.balance }}</td>
+                        </tr>
+                    {% endfor %}
+                    <div class="btnContainer">
+                        <a href="{{ url_for("new_account") }}" class="btn">New Account</a>
+                    </div>
+                {% else %}
+                    <!-- Example data to display when no user is logged in -->
                     <tr>
-                        <td>{{ acct.name }}</td>
-                        <td>{{ acct.number }}</td>
-                        <td>{{ acct.balance }}</td>
+                        <td>Bank 1</td>
+                        <td>1480</td>
+                        <td>100.00</td>
                     </tr>
-                {% endfor %}
-                <div class="btnContainer">
-                    <a href="{{ url_for("new_account") }}" class="btn">New Account</a>
-                </div>
-            {% else %}
-                <!-- Example data to display when no user is logged in -->
-                <tr>
-                    <td>Bank 1</td>
-                    <td>1480</td>
-                    <td>100.00</td>
-                </tr>
-                <tr>
-                    <td>Bank 2</td>
-                    <td>2467</td>
-                    <td>120.00</td>
-                </tr>
-            {% endif %}
-        </tbody>
-    </table>
+                    <tr>
+                        <td>Bank 2</td>
+                        <td>2467</td>
+                        <td>120.00</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
 {% endblock content %}
