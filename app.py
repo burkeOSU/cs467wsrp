@@ -41,10 +41,12 @@ def set_current_user():
     return dict(current_user=user)
 
 # Helper Functions
+
+
 def create_account_secure(account_data):
     # Parameterized inputs to protect against SQL injection
-    stmt = (f"INSERT INTO accounts (name, number, balance, user_id)"
-            f"VALUES (:name, :number, :balance, :user_id)")
+    stmt = ("INSERT INTO accounts (name, number, balance, user_id)"
+            "VALUES (:name, :number, :balance, :user_id)")
     try:
         # Secure submitting parameterized data
         db.session.execute(text(stmt), {
@@ -55,19 +57,20 @@ def create_account_secure(account_data):
         })
         db.session.commit()
         return redirect(url_for("accounts"))
-    except Exception as e:
+    except Exception:
         db.session.rollback()
         # Displays safer generic message instead of raw error msg
         return render_template(
-            "new_account.html", error="An error occurred creating the new account."
+            "new_account.html",
+            error="An error occurred creating the new account."
         ), 500
 
 
 def create_account_insecure(account_data):
     # Allows for SQL injection
     stmt = (f"INSERT INTO accounts (name, number, balance, user_id)"
-            f"VALUES ('{account_data["name"]}', '{account_data["number"]}', "
-            f"{account_data["balance"]}, {account_data["user_id"]})")
+            f"VALUES ('{account_data['name']}', '{account_data['number']}', "
+            f"{account_data['balance']}, {account_data['user_id']})")
     try:
         # Insecure submitting concatenated raw SQL to db
         db.session.execute(text(stmt))
@@ -95,7 +98,7 @@ def login():
     if request.method == "POST":
 
         # Get form data
-        security_choice = request.form.get("security_choice")
+        # security_choice = request.form.get("security_choice")
         email = request.form.get("email")
         password = request.form.get("password")
 
@@ -156,12 +159,12 @@ def accounts():
     # Can retrieve accounts data in template for global current user
     return render_template("accounts.html")
 
- 
+
 @app.route("/new_account", methods=["GET", "POST"])
 def new_account():
     if request.method == "GET":
         return render_template("new_account.html")
-    
+
     if request.method == "POST":
         security_choice = request.form.get("security_choice")
         data = {
@@ -174,11 +177,12 @@ def new_account():
         # Check that all attributes are present
         if not data["name"] or not data["number"] or not data["balance"]:
             return render_template(
-               "new_account.html", error="Missing one or more parameters."
+                "new_account.html", error="Missing one or more parameters."
             ), 400
 
         if security_choice == "vulnerable":
-            # Allows for SQL injection to display informational error message on screen (error-based SQLi)
+            # Allows for SQL injection to display informational error message
+            # on screen (error-based SQLi)
             return create_account_insecure(data)
 
         if security_choice == "hardened":
@@ -190,9 +194,10 @@ def new_account():
 def register():
     if request.method == "GET":
         return render_template("register.html")
-    
+
     if request.method == "POST":
-        email = request.form.get("email").strip().lower()   # case insensitive, delete spaces
+        # case insensitive, delete spaces
+        email = request.form.get("email").strip().lower()
         first_name = request.form.get("first_name")
         last_name = request.form.get("last_name")
         password = request.form.get("password")
@@ -200,7 +205,7 @@ def register():
         # Ensure all attributes are present
         if not email or not first_name or not last_name or not password:
             return render_template(
-               "register.html", error="Missing one or more fields."
+                "register.html", error="Missing one or more fields."
             ), 400
 
         # Check if user with email already exists
@@ -208,21 +213,35 @@ def register():
         user = db.session.execute(text(query), {"email": email}).fetchone()
         if user:
             return render_template(
-               "register.html", error="A user with that email already exists."
+                "register.html", error="A user with that email already exists."
             ), 400
 
         # Encrypt the password
         password_hash = generate_password_hash(password)
+        role = UserRole.CUSTOMER.value
 
         # Insecure stmt
-        stmt = (f"INSERT INTO users (email, first_name, last_name, role, password_hash)" 
-                f"VALUES ('{email}', '{first_name}', '{last_name}', 'customer', '{password_hash}')")
+        stmt = (
+            "INSERT INTO users (email, first_name, last_name, role, "
+            "password_hash)"
+            f"VALUES ('{email}', '{first_name}', '{last_name}', '{role}', "
+            f"'{password_hash}')"
+        )
 
         try:
             # Insecure code
             result = db.session.execute(text(stmt))
             # Secure code
-            # db.session.execute(text(stmt), {"email": email, "first_name": first_name, "last_name": last_name, "role": "customer", "password_hash": password_hash})
+            # db.session.execute(
+            #   text(stmt),
+            #   {
+            #       "email": email,
+            #       "first_name": first_name,
+            #       "last_name": last_name,
+            #       "role": "customer",
+            #       "password_hash": password_hash
+            #   }
+            # )
             db.session.commit()
             # Retrieve newly created user info to set session variables
             new_user_id = result.lastrowid
@@ -230,10 +249,11 @@ def register():
             session["user_id"] = user.id
             session["user_fname"] = user.first_name
             return redirect(url_for("accounts"))
-        except:
+        except BaseException:
             db.session.rollback()
             return render_template(
-                 "register.html", error="An error occurred creating the new user."
+                "register.html",
+                error="An error occurred creating the new user."
             ), 500
 
 
