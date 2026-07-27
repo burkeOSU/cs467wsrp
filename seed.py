@@ -8,7 +8,7 @@ USERS = [
         "first_name": "Admin",
         "last_name": "Istrator",
         "role": "admin",
-        "password": "adminPassword"
+        "password": "password"
     },
     {
         "email": "buzz@example.com",
