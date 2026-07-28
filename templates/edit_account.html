@@ -19,7 +19,7 @@
             </div>
             <div class="formDiv">
                 <label for="number">Number</label>
-                <input type="text" id="number" name="number" value={{ acct.number }} required />
+                <input type="text" id="number" name="number" value="{{ acct.number }}" required />
             </div>
             <div class="formDiv">
                 <label for="balance">Balance</label>
@@ -28,7 +28,7 @@
                         min="0.00"
                         id="balance"
                         name="balance"
-                        value={{ acct.balance }}
+                        value="{{ acct.balance }}"
                         required />
             </div>
             <div class="btnContainer">

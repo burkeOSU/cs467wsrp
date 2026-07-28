@@ -9,7 +9,7 @@ then displays sensitive information to the screen. The following value was input
 The webpage displayed an error message containing the beginning part of the hashed password
 for the admin user.
 
-![Error-based SQL injection attack result](./screenshots/ErrorSQLi.png)
+![Error-based SQL injection attack result](./screenshots/ErrorSQLi/ErrorSQLi.png)
 ## Code Vulnerability
 The raw SQL statement to insert a new account in the database was not properly 
 sanitized and directly concatinated, such that the injection was run as code and executed.
@@ -20,7 +20,7 @@ stmt = (f"INSERT INTO accounts (name, number, balance, user_id) VALUES ('{name}'
 db.session.execute(text(stmt))
 ```
 
-Additionally, the code currently displays the raw database error: 
+Additionally, the code currently displays the raw database error:
 
 ```python
 except Exception as e:
@@ -48,8 +48,8 @@ except Exception as e:
 ## Retesting Result
 The injection is treated as a literal value and not executed as code.
 
-![Error-based SQL injection attack retest result](./screenshots/ErrorSQLiFixed.png)
+![Error-based SQL injection attack retest result](./screenshots/ErrorSQLi/ErrorSQLiFixed.png)
 
 Generic error message is displayed.
 
-![Error-based SQL injection attack retest result error message](./screenshots/ErrorSQLiFixed2.png)
+![Error-based SQL injection attack retest result error message](./screenshots/ErrorSQLi/ErrorSQLiFixed2.png)
