@@ -4,11 +4,11 @@ This attack uses the URL input `http://127.0.0.1:8080/admin` to access the Admin
 
 *Note: See SQLi Blind for information on how to attack the Admin Account's user ID input form.*
 
-![Alt text](./screenshots/AuthBypassRes1.png)
+![Alt text](./screenshots/AuthBypass/AuthBypassRes1.png)
 
 This attack can be performed when logged in as a customer - as shown in the image above - or even if the user is not logged in, like the image below:
 
-![Alt text](./screenshots/AuthBypassRes2.png)
+![Alt text](./screenshots/AuthBypass/AuthBypassRes2.png)
 
 ## Code Vulnerability
 The navigation links from base.html provide redirects to Admin Accounts if the user is logged in as an admin, otherwise they are redirected to Accounts:
@@ -46,8 +46,8 @@ Additionally after checking the login status, it checks the user's role. If the 
 ## Retesting Result
 Only user's that are admins can not access the Admin Accounts page. Users that are not logged in are redirected to the Login page:
 
-![Alt text](./screenshots/AuthBypassRetest1.png)
+![Alt text](./screenshots/AuthBypass/AuthBypassRetest1.png)
 
 If the user is logged in but not an admin, they are instead redirected to the Access Denied page:
 
-![Alt text](./screenshots/AuthBypassRetest2.png)
+![Alt text](./screenshots/AuthBypass/AuthBypassRetest2.png)

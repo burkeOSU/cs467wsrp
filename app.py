@@ -42,8 +42,6 @@ def set_current_user():
     return dict(current_user=user)
 
 # Helper Functions
-
-
 def create_account_secure(account_data):
     # Parameterized inputs to protect against SQL injection
     stmt = ("INSERT INTO accounts (name, number, balance, user_id)"
@@ -101,7 +99,7 @@ def login():
     if request.method == "POST":
 
         # Get form data
-        # security_choice = request.form.get("security_choice")
+        security_choice = request.form.get("security_choice")
         email = request.form.get("email")
         password = request.form.get("password")
 
@@ -109,20 +107,22 @@ def login():
         if not email or not password:
             return {"Error: Missing email or password."}, 400
         
-        # # Set lockout time remaining
-        # now = int(time.time())
-        # lockout_time = session.get("lockout_time_seconds", 0)
+        # Secure code
+        if security_choice == "hardened":
+            # Set lockout time remaining
+            now = int(time.time())
+            lockout_time = session.get("lockout_time_seconds", 0)
 
-        # if lockout_time > now:
-        #     remaining = lockout_time - now
-        #     # HTTP 429 = "Too Many Requests" error
-        #     return render_template(
-        #     "login.html", error=f"Too many failed login attempts. Please try again in {remaining} seconds."
-        # ), 429
-        # # After 30 seconds, reset lockout timer and failed attempt counter
-        # if lockout_time > 0 and lockout_time <= now:
-        #     session["total_failed_logins"] = 0
-        #     session["lockout_time_seconds"] = 0
+            if lockout_time > now:
+                remaining = lockout_time - now
+                # HTTP 429 = "Too Many Requests" error
+                return render_template(
+                "login.html", error=f"Too many failed login attempts. Please try again in {remaining} seconds."
+            ), 429
+            # After 30 seconds, reset lockout timer and failed attempt counter
+            if lockout_time > 0 and lockout_time <= now:
+                session["total_failed_logins"] = 0
+                session["lockout_time_seconds"] = 0
 
         # Find user with specified email
         user = db.session.scalars(
@@ -132,24 +132,28 @@ def login():
         if user and user.check_password(password):
             session["user_id"] = user.id
             session["user_fname"] = user.first_name
-            # # Successful login = reset lockout parameters
-            # session["total_failed_logins"] = 0
-            # session["lockout_time_seconds"] = 0
+            # Secure code
+            if security_choice == "hardened":
+                # Successful login = reset lockout parameters
+                session["total_failed_logins"] = 0
+                session["lockout_time_seconds"] = 0
             if user.role == UserRole.ADMIN:
                 return redirect(url_for("admin"))
             else:
                 return redirect(url_for("accounts"))
+
+        # Secure code
+        if security_choice == "hardened":    
+            # Unsuccessful login = increment total_failed_logins
+            total_failed_logins = session.get("total_failed_logins", 0) + 1
+            session["total_failed_logins"] = total_failed_logins
             
-        # # Unsuccessful login = increment total_failed_logins
-        # total_failed_logins = session.get("total_failed_logins", 0) + 1
-        # session["total_failed_logins"] = total_failed_logins
-        
-        # if total_failed_logins >=3:
-        #     session["lockout_time_seconds"] = now + 30
-        #     remaining = session["lockout_time_seconds"] - now
-        #     return render_template(
-        #     "login.html", error=f"Too many failed login attempts. Please try again in {remaining} seconds."
-        # ), 429
+            if total_failed_logins >=3:
+                session["lockout_time_seconds"] = now + 30
+                remaining = session["lockout_time_seconds"] - now
+                return render_template(
+                "login.html", error=f"Too many failed login attempts. Please try again in {remaining} seconds."
+            ), 429
 
         return render_template(
             "login.html", error="Invalid email or password."
@@ -299,6 +303,7 @@ def register():
 
     if request.method == "POST":
         # case insensitive, delete spaces
+        security_choice = request.form.get("security_choice")
         email = request.form.get("email").strip().lower()
         first_name = request.form.get("first_name")
         last_name = request.form.get("last_name")
@@ -334,16 +339,17 @@ def register():
             # Insecure code
             result = db.session.execute(text(stmt))
             # Secure code
-            # db.session.execute(
-            #   text(stmt),
-            #   {
-            #       "email": email,
-            #       "first_name": first_name,
-            #       "last_name": last_name,
-            #       "role": "customer",
-            #       "password_hash": password_hash
-            #   }
-            # )
+            if security_choice == "hardened":
+                db.session.execute(
+                text(stmt),
+                {
+                    "email": email,
+                    "first_name": first_name,
+                    "last_name": last_name,
+                    "role": "customer",
+                    "password_hash": password_hash
+                }
+                )
             db.session.commit()
             # Retrieve newly created user info to set session variables
             new_user_id = result.lastrowid
