@@ -232,18 +232,22 @@ def edit_account(id):
     if "user_id" not in session:
         return redirect(url_for("login"))
 
+    # Get account with that id, check that it exists
+    account = db.session.get(Account, id)
+    if account is None:
+        return render_template("edit_account.html", error="Account not found."), 404
+
+    # Check that user has access to this account
+    if account.user_id != session["user_id"]:
+        return {"Error": "You do not have access to this account."}, 403
+
+    # Return form prefilled with acct data if GET
     if request.method == "GET":
-        account = db.session.get(Account, id)
-        if account is None:
-            return render_template("edit_account.html", error="Account not found."), 404
         return render_template("edit_account.html", acct=account)
 
+    # Process update
     if request.method == "POST":
-        # Validate account id
-        account = db.session.get(Account, id)
-        if account is None:
-            return render_template("edit_account.html", error="Account not found."), 404
-        # Then get form data
+        # Get form data
         security_choice = request.form.get("security_choice")
         name = request.form.get("name")
         number = request.form.get("number")
@@ -268,7 +272,7 @@ def edit_account(id):
                 acct=account,
                 success="Account successfully updated.",
                 security=security_choice)
-        except Exception as e:
+        except:
             db.session.rollback()
             return render_template(
                 "edit_account.html",
