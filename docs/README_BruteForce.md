@@ -12,37 +12,37 @@
 This attack repeatedly enters one or more inputs until a successful login is found. In this case, the program BurpSuite is used to enter a known email, followed by a list of commonly used - and therefore insecure - passwords.
 
  1. Open BurpSuite, click 'Next' and 'Start Burp'. If a pop-up saying "BurpSuite is out of date" appears, click 'OK' (the version available in the Kali Linux distribution is acceptable for this attack).
-![Alt text](https://github.com/burkeOSU/cs467wsrp/blob/feature/bruteforce/docs/screenshots/Screenshot%20Desc1-1.png)
-![Alt text](https://github.com/burkeOSU/cs467wsrp/blob/feature/bruteforce/docs/screenshots/Screenshot%20Desc1-2.png)
-![Alt text](https://github.com/burkeOSU/cs467wsrp/blob/feature/bruteforce/docs/screenshots/Screenshot%20Desc1-3.png)
+![Alt text](https://github.com/burkeOSU/cs467wsrp/blob/feature/bruteforce/docs/screenshots/BruteForceDesc1-1.png)
+![Alt text](https://github.com/burkeOSU/cs467wsrp/blob/feature/bruteforce/docs/screenshots/BruteForceDesc1-2.png)
+![Alt text](https://github.com/burkeOSU/cs467wsrp/blob/feature/bruteforce/docs/screenshots/BruteForceDesc1-3.png)
  2. Click the 'Open pre-configured browser' button in the top-right corner of BurpSuite, head to the Login page (http://127.0.0.1:8080/login).
- ![Alt text](https://github.com/burkeOSU/cs467wsrp/blob/feature/bruteforce/docs/screenshots/Screenshot%20Desc2-1.png)
- ![Alt text](https://github.com/burkeOSU/cs467wsrp/blob/feature/bruteforce/docs/screenshots/Screenshot%20Desc2-2.png)
+ ![Alt text](https://github.com/burkeOSU/cs467wsrp/blob/feature/bruteforce/docs/screenshots/BruteForceDesc2-1.png)
+ ![Alt text](https://github.com/burkeOSU/cs467wsrp/blob/feature/bruteforce/docs/screenshots/BruteForceDesc2-2.png)
  3. Click on the 'Proxy' tab on BurpSuite, then 'Intercept off' to turn on Intercept; this will intercept any HTTP requests such as GET or POST, which will occur when switching to a different page, clicking buttons, or submitting information in the input boxes.
- ![Alt text](https://github.com/burkeOSU/cs467wsrp/blob/feature/bruteforce/docs/screenshots/Screenshot%20Desc3-1.png)
- ![Alt text](https://github.com/burkeOSU/cs467wsrp/blob/feature/bruteforce/docs/screenshots/Screenshot%20Desc3-2.png)
- ![Alt text](https://github.com/burkeOSU/cs467wsrp/blob/feature/bruteforce/docs/screenshots/Screenshot%20Desc3-3.png)
+ ![Alt text](https://github.com/burkeOSU/cs467wsrp/blob/feature/bruteforce/docs/screenshots/BruteForceDesc3-1.png)
+ ![Alt text](https://github.com/burkeOSU/cs467wsrp/blob/feature/bruteforce/docs/screenshots/BruteForceDesc3-2.png)
+ ![Alt text](https://github.com/burkeOSU/cs467wsrp/blob/feature/bruteforce/docs/screenshots/BruteForceDesc3-3.png)
  4. Enter admin@example.com and a random password ("pass" is used in this example), then click 'Sign In'. BurpSuite will intercept this submission. Right-click the interception, then click 'Send to Intruder'.
-  ![Alt text](https://github.com/burkeOSU/cs467wsrp/blob/feature/bruteforce/docs/screenshots/Screenshot%20Desc4-1.png)
-  ![Alt text](https://github.com/burkeOSU/cs467wsrp/blob/feature/bruteforce/docs/screenshots/Screenshot%20Desc4-2.png)
+  ![Alt text](https://github.com/burkeOSU/cs467wsrp/blob/feature/bruteforce/docs/screenshots/BruteForceDesc4-1.png)
+  ![Alt text](https://github.com/burkeOSU/cs467wsrp/blob/feature/bruteforce/docs/screenshots/BruteForceDesc4-2.png)
  5. Click on the 'Intruder' tab, delete the word "pass" from Line 22, then click 'Add §'. This should add "§§" next to the line "email=admin%40example.com&password=".
- ![Alt text](https://github.com/burkeOSU/cs467wsrp/blob/feature/bruteforce/docs/screenshots/Screenshot%20Desc5-1.png)
-  ![Alt text](https://github.com/burkeOSU/cs467wsrp/blob/feature/bruteforce/docs/screenshots/Screenshot%20Desc5-2.png)
-   ![Alt text](https://github.com/burkeOSU/cs467wsrp/blob/feature/bruteforce/docs/screenshots/Screenshot%20Desc5-3.png)
-    ![Alt text](https://github.com/burkeOSU/cs467wsrp/blob/feature/bruteforce/docs/screenshots/Screenshot%20Desc5-4.png)
+ ![Alt text](https://github.com/burkeOSU/cs467wsrp/blob/feature/bruteforce/docs/screenshots/BruteForceDesc5-1.png)
+  ![Alt text](https://github.com/burkeOSU/cs467wsrp/blob/feature/bruteforce/docs/screenshots/BruteForceDesc5-2.png)
+   ![Alt text](https://github.com/burkeOSU/cs467wsrp/blob/feature/bruteforce/docs/screenshots/BruteForceDesc5-3.png)
+    ![Alt text](https://github.com/burkeOSU/cs467wsrp/blob/feature/bruteforce/docs/screenshots/BruteForceDesc5-4.png)
  6. Under 'Payload configuration', click 'Load...', select the rockyou.txt wordlist and click 'Open'. This can be found in the Kali Linux distribution in the path /usr/share/wordlists, although the file can also be found [here](https://github.com/RykerWilder/rockyou.txt).
 *Note: The file is very large, so opening the file may take a few seconds.*
-  ![Alt text](https://github.com/burkeOSU/cs467wsrp/blob/feature/bruteforce/docs/screenshots/Screenshot%20Desc6-1.png)
-    ![Alt text](https://github.com/burkeOSU/cs467wsrp/blob/feature/bruteforce/docs/screenshots/Screenshot%20Desc6-2.png)
-      ![Alt text](https://github.com/burkeOSU/cs467wsrp/blob/feature/bruteforce/docs/screenshots/Screenshot%20Desc6-3.png)
+  ![Alt text](https://github.com/burkeOSU/cs467wsrp/blob/feature/bruteforce/docs/screenshots/BruteForceDesc6-1.png)
+    ![Alt text](https://github.com/burkeOSU/cs467wsrp/blob/feature/bruteforce/docs/screenshots/BruteForceDesc6-2.png)
+      ![Alt text](https://github.com/burkeOSU/cs467wsrp/blob/feature/bruteforce/docs/screenshots/BruteForceDesc6-3.png)
  7. Click 'Start attack'. After a few minutes, a pop-up message saying "Burp Intruder: The Community Edition of Burp Suite contains a demo version of Burp Intruder...". Click 'OK'.
-  ![Alt text](https://github.com/burkeOSU/cs467wsrp/blob/feature/bruteforce/docs/screenshots/Screenshot%20Desc7-1.png)
+  ![Alt text](https://github.com/burkeOSU/cs467wsrp/blob/feature/bruteforce/docs/screenshots/BruteForceDesc7-1.png)
 ## Result
 A page featuring the many attacks performed is shown in the form of requests. Clicking on the column header 'Status Code' will reveal the request "password" with a status code of 302 (a [HTTP 302 Found redirection response](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/302)) and a length significantly shorter then the other requests listed. This indicates that the correct password is found.
- ![Alt text](https://github.com/burkeOSU/cs467wsrp/blob/feature/bruteforce/docs/screenshots/Screenshot%20Res1.png)
+ ![Alt text](https://github.com/burkeOSU/cs467wsrp/blob/feature/bruteforce/docs/screenshots/BruteForceRes1.png)
 Entering this password with the email address should successfully log in to the Admin Account and redirect to the Admin's Database page.
- ![Alt text](https://github.com/burkeOSU/cs467wsrp/blob/feature/bruteforce/docs/screenshots/Screenshot%20Res2.png)
-  ![Alt text](https://github.com/burkeOSU/cs467wsrp/blob/feature/bruteforce/docs/screenshots/Screenshot%20Res3.png)
+ ![Alt text](https://github.com/burkeOSU/cs467wsrp/blob/feature/bruteforce/docs/screenshots/BruteForceRes2.png)
+  ![Alt text](https://github.com/burkeOSU/cs467wsrp/blob/feature/bruteforce/docs/screenshots/BruteForceRes3.png)
 
 ## Code Vulnerability
 The login authorization checks if the user and password match; if they do not match, the error message "Invalid email or password." appears:
@@ -112,6 +112,6 @@ Finally if a successful login was performed, then the failed login count and loc
 
 ## Retesting Result
 Now when the email and an incorrect password is submitted 3 times, the message "Too many failed login attempts. Please try again in 30 seconds." appears. Even if the correct password is inputted during the lockout, the user cannot log in until the lockout timer expires.
- ![Alt text](https://github.com/burkeOSU/cs467wsrp/blob/feature/bruteforce/docs/screenshots/Screenshot%20Retest1.png)
+ ![Alt text](https://github.com/burkeOSU/cs467wsrp/blob/feature/bruteforce/docs/screenshots/BruteForceRetest1.png)
 While this example locks out the user for 30 seconds, this value can be increased, greatly hindering an attackers brute force progress.
 
