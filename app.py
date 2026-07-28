@@ -249,7 +249,7 @@ def edit_account(id):
 
     # Check that user has access to this account
     if account.user_id != session["user_id"]:
-        return {"Error": "You do not have access to this account."}, 403
+        return render_template("access_denied.html"), 403
 
     # Return form prefilled with acct data if GET
     if request.method == "GET":
