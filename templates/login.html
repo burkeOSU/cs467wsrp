@@ -1,20 +1,32 @@
 {% extends "base.html" %}
 {% block content %}
-    <h1>Login</h1>
-    <form class="form" action="{{ url_for("login") }}" method="post">
-        <div class="formDiv">
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" required />
+    <div class="mainSection">
+        <h1>Login</h1>
+        <form class="form" action="{{ url_for("login") }}" method="post">
+            {% include 'components/toggle.html' %}
+            <div class="formDiv">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required />
+            </div>
+            <div class="formDiv">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required />
+            </div>
+            <div class="btnContainer">
+                <button type="submit" class="btn">Sign In</button>
+            </div>
+        </form>
+        {% if error %}
+            <div class="errorMsg">{{ error }}</div>
+        {% endif %}
+    </div>
+    {% include 'components/hint.html' %}
+    <div class="lowerSection">
+        <div id="hintContent" class="content">
+            <p>This is hint content.</p>
         </div>
-        <div class="formDiv">
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password" required />
+        <div id="explainContent" class="content">
+            <p>This is explanation content.</p>
         </div>
-        <div class="btnContainer">
-            <button type="submit" class="btn">Sign In</button>
-        </div>
-    </form>
-    {% if error %}
-        <div class="errorMsg">{{ error }}</div>
-    {% endif %}
+    </div>
 {% endblock content %}

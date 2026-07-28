@@ -1,27 +1,44 @@
 {% extends "base.html" %}
 {% block content %}
-    <h1>New Account</h1>
-    <form class="form" action="{{ url_for('new_account') }}" method="post">
-        <div class="formDiv">
-            <label for="name">Name</label>
-            <input type="text" id="name" name="name" required />
+    <div class="mainSection">
+        <h1>New Account</h1>
+        <form class="form" action="{{ url_for('new_account') }}" method="post">
+            {% include 'components/toggle.html' %}
+            <div class="formDiv">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" required />
+                </div>
+                <div class="formDiv">
+                    <label for="number">Number</label>
+                    <input type="text" id="number" name="number" required />
+                </div>
+                <div class="formDiv">
+                    <label for="balance">Balance</label>
+                    <input type="number"
+                           step="0.01"
+                           min="0.00"
+                           id="balance"
+                           name="balance"
+                           required />
+                </div>
+                <div class="btnContainer">
+                    <button type="submit" class="btn">Add Account</button>
+                </div>
+            </form>
+            {% if success %}
+                <div class="successMsg">{{ success }}</div>
+            {% endif %}
+            {% if error %}
+                <div class="errorMsg">{{ error }}</div>
+            {% endif %}
         </div>
-        <div class="formDiv">
-            <label for="number">Number</label>
-            <input type="text" id="number" name="number" required />
+        {% include 'components/hint.html' %}
+        <div class="lowerSection">
+            <div id="hintContent" class="content">
+                <p>This is hint content.</p>
+            </div>
+            <div id="explainContent" class="content">
+                <p>This is explanation content.</p>
+            </div>
         </div>
-        <div class="formDiv">
-            <label for="balance">Balance</label>
-            <input type="number" step="0.01" min="0.00" id="balance" name="balance" required />
-        </div>
-        <div class="btnContainer">
-            <button type="submit" class="btn">Add Account</button>
-        </div>
-    </form>
-    {% if success %}
-        <div class="successMsg">{{ success }}</div>
-    {% endif %}
-    {% if error %}
-        <div class="errorMsg">{{ error }}</div>
-    {% endif %}
 {% endblock content %}
