@@ -42,32 +42,6 @@ Additionally after checking the login status, it checks the user's role. If the 
     
     user_id = request.args.get("user_id")
 ```
-access_denied.html was also created as part of this code improvement:
-
-```html
-{% extends "base.html" %}
-{% block content %}
-    <div class="mainSection">
-        <h1>Access Denied</h1>
-        <div>
-            <p>
-                <li>
-                    Access Denied: You Don’t Have Permission to access this page.
-                </li>
-                <li>
-                    Please check your credentials and try again.
-                </li>
-            </p>
-            <div class="directions">
-                <ul>
-                    <li>
-                        Return to <a href="{{ url_for("login") }}">login</a>.
-                    </li>
-            </div>
-        </div>
-    </div>
-{% endblock content %}
-```
 
 ## Retesting Result
 Only user's that are admins can not access the Admin Accounts page. Users that are not logged in are redirected to the Login page:
