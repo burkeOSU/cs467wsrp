@@ -39,8 +39,6 @@ with app.app_context():
 def set_current_user():
     user_id = session.get('user_id')
     user = db.session.get(User, user_id) if user_id else None
-    if user.role.value != "admin":
-        return render_template("access_denied.html")
     return dict(current_user=user)
 
 # Helper Functions
@@ -65,7 +63,8 @@ def create_account_secure(account_data):
         # Displays safer generic message instead of raw error msg
         return render_template(
             "new_account.html",
-            error="An error occurred creating the new account."
+            error="An error occurred creating the new account.",
+            security="hardened"
         ), 500
 
 
@@ -83,7 +82,8 @@ def create_account_insecure(account_data):
         db.session.rollback()
         # Displays raw error message, giving valuable information to attacker
         return render_template(
-            "new_account.html", error=str(e)
+            "new_account.html", error=str(e),
+            security="vulnerable"
         ), 500
 
 
@@ -244,6 +244,7 @@ def edit_account(id):
         if account is None:
             return render_template("edit_account.html", error="Account not found."), 404
         # Then get form data
+        security_choice = request.form.get("security_choice")
         name = request.form.get("name")
         number = request.form.get("number")
         balance = request.form.get("balance")
@@ -251,26 +252,29 @@ def edit_account(id):
         # Check that all attributes are present
         if not name or not number or not balance:
             return render_template(
-                "new_account.html", 
-                error="Missing one or more parameters."
+                "edit_account.html", 
+                error="Missing one or more parameters.",
+                acct=account
             ), 400
 
-        # Allows for SQL injection of script
-        stmt = f"UPDATE accounts SET name='{name}', number='{number}', balance={balance} WHERE id={id}"
-
         try:
-            db.session.execute(text(stmt))
+            # Flask-SQLAlchemy ORM automatically generates prepared stmt with parameterized inputs (protects against SQLi)
+            account.name = name
+            account.number = number
+            account.balance = balance
             db.session.commit()
-            # Get updated account
-            updated_account = db.session.get(Account, id)
-            return render_template("edit_account.html", acct=updated_account, success="Account successfully updated.")
+            return render_template(
+                "edit_account.html",
+                acct=account,
+                success="Account successfully updated.",
+                security=security_choice)
         except Exception as e:
             db.session.rollback()
-            print(e)
             return render_template(
                 "edit_account.html",
                 error="An error occurred updating the account.",
-                acct=account
+                acct=account,
+                security=security_choice
             ), 500
 
 
