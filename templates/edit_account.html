@@ -2,16 +2,24 @@
 {% extends "base.html" %}
 {% block content %}
     <div class="mainSection">
-        <h1>New Account</h1>
-        <form class="form" action="{{ url_for('new_account') }}" method="post">
+        <h1>Edit Account</h1>
+        <form class="form" action="{{ url_for('edit_account', id=acct.id) }}" method="post">
             {{ toggle(security) if security else toggle("vulnerable") }}
             <div class="formDiv">
                 <label for="name">Name</label>
-                <input type="text" id="name" name="name" />
+                <input type="text"
+                        id="name"
+                        name="name"
+                        {% if security == "vulnerable" %}
+                            value={{ acct.name }}
+                        {% else %}
+                            value="{{ acct.name }}"
+                        {% endif %}
+                        required />
             </div>
             <div class="formDiv">
                 <label for="number">Number</label>
-                <input type="text" id="number" name="number" />
+                <input type="text" id="number" name="number" value="{{ acct.number }}" required />
             </div>
             <div class="formDiv">
                 <label for="balance">Balance</label>
@@ -20,10 +28,11 @@
                         min="0.00"
                         id="balance"
                         name="balance"
-                />
+                        value="{{ acct.balance }}"
+                        required />
             </div>
             <div class="btnContainer">
-                <button type="submit" class="btn">Add Account</button>
+                <button type="submit" class="btn">Save</button>
             </div>
         </form>
         {% if success %}
@@ -36,8 +45,9 @@
     {% include 'components/hint.html' %}
     <div class="lowerSection">
         <div id="hintContent" class="content">
-            <p>' or ExtractValue(1, concat(':', (SELECT password_hash FROM users WHERE role='admin' LIMIT 1))) or '</p>
-            <p>Input a very long string for name (>100 chars) to generate an error.</p>
+            <p>Enter this as the input for name:
+                <br>
+                admin onfocus=document.querySelector("h1").innerText="Hacked!" autofocus</p>
         </div>
         <div id="explainContent" class="content">
             <p>This is explanation content.</p>
