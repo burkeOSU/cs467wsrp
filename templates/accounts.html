@@ -6,6 +6,8 @@
         {% else %}
             <h1>Example's Accounts</h1>
         {% endif %}
+                <form class="form" action="{{ url_for("accounts") }}" method="post">
+            {{ toggle(security) if security else toggle("vulnerable") }}
         <table class="acctTable">
             <thead>
                 <tr>
