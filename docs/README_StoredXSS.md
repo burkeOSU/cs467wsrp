@@ -13,7 +13,7 @@ that should be there. You can imagine this could become more involved, such as r
 form url to send to an attacker or triggering a pre-defined larger function using an existing
 library.
 
-![Stored Cross-Site Scripting before attack](./screenshots/StoredXSS/XSSAttackAfter.png)
+![Stored Cross-Site Scripting after attack](./screenshots/StoredXSS/XSSAttackAfter.png)
 ## Code Vulnerability
 The vulnerability here is actually in the Jinja2 html template. The database update is secure
 but still allows the storage of the attack line as it is plain text. However, the data returned
@@ -36,4 +36,4 @@ that could be easy to miss!
 ## Retesting Result
 The stored script is treated as a string value and is not executed as code.
 
-![Error-based SQL injection attack retest result](./screenshots/StoredXSS/XSSfixed.png)
+![Stored Cross-Site Scripting attack retest result](./screenshots/StoredXSS/XSSfixed.png)
