@@ -311,7 +311,6 @@ def register():
 
     if request.method == "POST":
         # case insensitive, delete spaces
-        security_choice = request.form.get("security_choice")
         email = request.form.get("email").strip().lower()
         first_name = request.form.get("first_name")
         last_name = request.form.get("last_name")
@@ -347,17 +346,16 @@ def register():
             # Insecure code
             result = db.session.execute(text(stmt))
             # Secure code
-            if security_choice == "hardened":
-                db.session.execute(
-                text(stmt),
-                {
-                    "email": email,
-                    "first_name": first_name,
-                    "last_name": last_name,
-                    "role": "customer",
-                    "password_hash": password_hash
-                }
-                )
+            # db.session.execute(
+            #   text(stmt),
+            #   {
+            #       "email": email,
+            #       "first_name": first_name,
+            #       "last_name": last_name,
+            #       "role": "customer",
+            #       "password_hash": password_hash
+            #   }
+            # )
             db.session.commit()
             # Retrieve newly created user info to set session variables
             new_user_id = result.lastrowid
