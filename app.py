@@ -162,17 +162,15 @@ def login():
 
 @app.route("/admin")
 def admin():
-    # User account specific hardening for Auth Bypass attacks
-    if session.get("admin_hardened"):
-        # Check user is logged in
-        if "user_id" not in session:
-            return redirect(url_for("login"))
+    # Check user is logged in
+    if "user_id" not in session:
+        return redirect(url_for("login"))
 
-        # Check user role is admin
-        current_user_id = session.get('user_id')
-        current_user = db.session.get(User, current_user_id)
-        if current_user.role.value != "admin":
-            return render_template("access_denied.html"), 403
+    # Check user role is admin
+    current_user_id = session.get('user_id')
+    current_user = db.session.get(User, current_user_id)
+    if current_user.role.value != "admin":
+        return render_template("access_denied.html"), 403
     
     user_id = request.args.get("user_id")
     if user_id:
