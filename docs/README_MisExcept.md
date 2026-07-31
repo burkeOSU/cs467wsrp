@@ -84,3 +84,14 @@ Now, when an error occurs trying to register the new user, it is caught with
 an appropriate error message displayed.
 
 ![Mishandled Exception retest result](./screenshots/MisExc/MisExcFixed.png)
+
+Note that the detailed error template shown in this example will only
+display if the app is being run in debug mode:
+
+```python
+if __name__ == "__main__":
+    app.run(port=8080, debug=True)
+```
+
+Therefore, for this to be a vulnerability in production, the developer would
+have to forget to set debug to False.
