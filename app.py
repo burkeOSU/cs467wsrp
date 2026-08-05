@@ -7,6 +7,7 @@ from models import User, Account, UserRole
 from seed import seed_db
 from werkzeug.security import generate_password_hash
 from routes.login import login_bp
+from routes.admin import admin_bp
 
 # For env variables
 load_dotenv()
@@ -43,6 +44,7 @@ def set_current_user():
 
 # Register blueprints
 app.register_blueprint(login_bp)
+app.register_blueprint(admin_bp)
 
 # Helper Functions
 def create_account_secure(account_data):
@@ -141,48 +143,6 @@ def register_secure(email, first_name, last_name, role, password_hash):
 @app.route("/")
 def home():
     return render_template("index.html")
-
-
-@app.route("/admin")
-def admin():
-    # User account specific hardening for Auth Bypass attacks
-    if session.get("admin_hardened"):
-        # Check user is logged in
-        if "user_id" not in session:
-            return redirect(url_for("login.login"))
-
-        # Check user role is admin
-        current_user_id = session.get('user_id')
-        current_user = db.session.get(User, current_user_id)
-        if current_user.role.value != "admin":
-            return render_template("access_denied.html"), 403
-    
-    user_id = request.args.get("user_id")
-    if user_id:
-        stmt = f"SELECT * FROM users WHERE id = '{user_id}'"
-        result = db.session.execute(text(stmt))
-        user = result.fetchone()
-    else:
-        user = None
-    # Secure code
-    # user = db.session.get(User, user_id) if user_id else None
-
-    if user:
-        # If user was found with matching id, get their accounts and return
-        accts = db.session.scalars(db.select(Account).where(
-            Account.user_id == user.id)).all()
-        return render_template(
-            "admin.html", selected_user=user, accts=accts
-        )
-    else:
-        if user_id:
-            # Send error message that id did not match user
-            return render_template(
-                "admin.html", error="No user exists with that id."
-            ), 400
-        else:
-            # Render initial page before user id selection by admin user
-            return render_template("admin.html")
 
 
 @app.route("/accounts", methods=["GET"])

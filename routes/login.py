@@ -52,7 +52,7 @@ def login():
                 session["total_failed_logins"] = 0
                 session["lockout_time_seconds"] = 0
             if user.role == UserRole.ADMIN:
-                return redirect(url_for("admin"))
+                return redirect(url_for('admin.admin'))
             else:
                 return redirect(url_for("accounts"))
 

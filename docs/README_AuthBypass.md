@@ -14,9 +14,9 @@ This attack can be performed when logged in as a customer - as shown in the imag
 The navigation links from base.html provide redirects to Admin Accounts if the user is logged in as an admin, otherwise they are redirected to Accounts:
 ```html
 {% if current_user.role.value == "admin" %}
-    <a class="navlink" href="{{ url_for("admin") }}">Admin Accounts</a>
+    <a class="navlink" href="{{ url_for('admin.admin') }}">Admin Accounts</a>
 {% else %}
-    <a class="navlink" href="{{ url_for("accounts") }}">Accounts</a>
+    <a class="navlink" href="{{ url_for('accounts') }}">Accounts</a>
 ```
 However the admin function in app.py does not check the user's session or role upon redirecting to the link, instead only providing functionality for the user ID input form:
 ```python

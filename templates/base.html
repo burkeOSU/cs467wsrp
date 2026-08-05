@@ -18,7 +18,7 @@
                 <nav class="navbar">
                     <a class="navlink" href="{{ url_for('home') }}">Home</a>
                     {% if current_user.role.value == "admin" %}
-                        <a class="navlink" href="{{ url_for('admin') }}">Admin Accounts</a>
+                        <a class="navlink" href="{{ url_for('admin.admin') }}">Admin Accounts</a>
                     {% else %}
                         <a class="navlink" href="{{ url_for('accounts') }}">Accounts</a>
                     {% endif %}
