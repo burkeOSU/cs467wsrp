@@ -30,7 +30,7 @@ The admin function is modified so that before user ID requests are processed, it
 def admin():
     # Check user is logged in
     if "user_id" not in session:
-        return redirect(url_for("login"))
+        return redirect(url_for("login.login"))
 ```
 Additionally after checking the login status, it checks the user's role. If the user is not an admin, they are redirected to the Access Denied page:
 ```python

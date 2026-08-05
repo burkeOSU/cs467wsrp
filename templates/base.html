@@ -16,23 +16,23 @@
             {% if current_user %}
                 <!-- Nav bar for logged in user -->
                 <nav class="navbar">
-                    <a class="navlink" href="{{ url_for("home") }}">Home</a>
+                    <a class="navlink" href="{{ url_for('home') }}">Home</a>
                     {% if current_user.role.value == "admin" %}
-                        <a class="navlink" href="{{ url_for("admin") }}">Admin Accounts</a>
+                        <a class="navlink" href="{{ url_for('admin') }}">Admin Accounts</a>
                     {% else %}
-                        <a class="navlink" href="{{ url_for("accounts") }}">Accounts</a>
+                        <a class="navlink" href="{{ url_for('accounts') }}">Accounts</a>
                     {% endif %}
-                    <a class="navlink" href="{{ url_for("logout") }}">Logout</a>
+                    <a class="navlink" href="{{ url_for('logout') }}">Logout</a>
                 </nav>
             {% else %}
                 <!-- Nav bar when no user is logged in -->
                 <nav class="navbar">
-                    <a class="navlink" href="{{ url_for("home") }}">Home</a>
-                    <a class="navlink" href="{{ url_for("accounts") }}">Accounts</a>
+                    <a class="navlink" href="{{ url_for('home') }}">Home</a>
+                    <a class="navlink" href="{{ url_for('accounts') }}">Accounts</a>
                     <div class="navlink">
-                        <a href="{{ url_for("login") }}">Login</a>
+                        <a href="{{ url_for('login.login') }}">Login</a>
                         |
-                        <a href="{{ url_for("register") }}">Register</a>
+                        <a href="{{ url_for('register') }}">Register</a>
                     </div>
                 </nav>
             {% endif %}

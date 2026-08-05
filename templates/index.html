@@ -7,11 +7,11 @@
             <div class="directions">
                 <ul>
                     <li>
-                        <a href="{{ url_for("register") }}">Register</a> as a new user or
-                        <a href="{{ url_for("login") }}">login</a> as an existing user provided in the sample data.
+                        <a href="{{ url_for('register') }}">Register</a> as a new user or
+                        <a href="{{ url_for('login.login') }}">login</a> as an existing user provided in the sample data.
                     </li>
                     <li>
-                        Navigate to <a href="{{ url_for("accounts") }}">Accounts</a> to enter and view user account data.
+                        Navigate to <a href="{{ url_for('accounts') }}">Accounts</a> to enter and view user account data.
                     </li>
                     <li class="warning">
                         Warning: This site is for educational purposes.
