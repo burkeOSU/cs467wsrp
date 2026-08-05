@@ -3,7 +3,7 @@
 {% block content %}
     <div class="mainSection">
         <h1>New Account</h1>
-        <form class="form" action="{{ url_for('new_account') }}" method="post">
+        <form class="form" action="{{ url_for('account.new_account') }}" method="post">
             {{ toggle(security) if security else toggle("vulnerable") }}
             <div class="formDiv">
                 <label for="name">Name</label>

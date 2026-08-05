@@ -52,9 +52,9 @@ The login authorization checks if the user and password match; if they do not ma
             session["user_id"] = user.id
             session["user_fname"] = user.first_name
             if user.role == UserRole.ADMIN:
-                return redirect(url_for('admin'))
+                return redirect(url_for('admin.admin'))
             else:
-                return redirect(url_for('accounts'))
+                return redirect(url_for('account.accounts'))
 
         return render_template(
             "login.html", error="Invalid email or password."

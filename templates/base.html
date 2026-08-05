@@ -20,7 +20,7 @@
                     {% if current_user.role.value == "admin" %}
                         <a class="navlink" href="{{ url_for('admin.admin') }}">Admin Accounts</a>
                     {% else %}
-                        <a class="navlink" href="{{ url_for('accounts') }}">Accounts</a>
+                        <a class="navlink" href="{{ url_for('account.accounts') }}">Accounts</a>
                     {% endif %}
                     <a class="navlink" href="{{ url_for('logout') }}">Logout</a>
                 </nav>
@@ -28,7 +28,7 @@
                 <!-- Nav bar when no user is logged in -->
                 <nav class="navbar">
                     <a class="navlink" href="{{ url_for('home') }}">Home</a>
-                    <a class="navlink" href="{{ url_for('accounts') }}">Accounts</a>
+                    <a class="navlink" href="{{ url_for('account.accounts') }}">Accounts</a>
                     <div class="navlink">
                         <a href="{{ url_for('login.login') }}">Login</a>
                         |

@@ -54,7 +54,7 @@ def login():
             if user.role == UserRole.ADMIN:
                 return redirect(url_for('admin.admin'))
             else:
-                return redirect(url_for("accounts"))
+                return redirect(url_for("account.accounts"))
 
         # Secure code
         if security_choice == "hardened":    
