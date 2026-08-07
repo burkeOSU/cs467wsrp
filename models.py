@@ -5,12 +5,13 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 class UserRole(enum.Enum):
     """Defines valid user roles for storage in db."""
+
     ADMIN = "admin"
     CUSTOMER = "customer"
 
 
 class User(db.Model):
-    __tablename__ = 'users'
+    __tablename__ = "users"
 
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(255), unique=True, nullable=False)
@@ -24,7 +25,7 @@ class User(db.Model):
     user_lockout = db.Column(db.Boolean, default=False, nullable=False)
     total_failed_logins = db.Column(db.Integer, default=0, nullable=False)
 
-    account = db.relationship('Account', back_populates='user', lazy=True)
+    account = db.relationship("Account", back_populates="user", lazy=True)
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -37,25 +38,25 @@ class User(db.Model):
             "id": self.id,
             "email": self.email,
             "first_name": self.first_name,
-            "last_name": self.last_name
+            "last_name": self.last_name,
         }
 
 
 class Account(db.Model):
-    __tablename__ = 'accounts'
+    __tablename__ = "accounts"
 
     id = db.Column(db.Integer, primary_key=True)
     number = db.Column(db.String(100), nullable=False)
     name = db.Column(db.String(100), nullable=False)
     balance = db.Column(db.Numeric(12, 2), default=0.0)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
 
-    user = db.relationship('User', back_populates='account', lazy=True)
+    user = db.relationship("User", back_populates="account", lazy=True)
 
     def to_dict(self):
         return {
             "name": self.name,
             "number": self.number,
             "balance": self.balance,
-            "user_name": f"{self.user.first_name} {self.user.last_name}"
+            "user_name": f"{self.user.first_name} {self.user.last_name}",
         }

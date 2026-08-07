@@ -10,7 +10,7 @@ USERS = [
         "role": "admin",
         "password": "password",
         "user_lockout": False,
-        "total_failed_logins": 0
+        "total_failed_logins": 0,
     },
     {
         "email": "buzz@example.com",
@@ -19,7 +19,7 @@ USERS = [
         "role": "customer",
         "password": "buzzPassword",
         "user_lockout": False,
-        "total_failed_logins": 0
+        "total_failed_logins": 0,
     },
     {
         "email": "jessie@example.com",
@@ -28,7 +28,7 @@ USERS = [
         "role": "customer",
         "password": "jessiePassword",
         "user_lockout": False,
-        "total_failed_logins": 0
+        "total_failed_logins": 0,
     },
 ]
 
@@ -37,21 +37,20 @@ ACCOUNTS = [
         "number": "12345678",
         "name": "Fidelity",
         "balance": 1000.50,
-        "user_email": "buzz@example.com"
+        "user_email": "buzz@example.com",
     },
     {
         "number": "57574433",
         "name": "Chase",
         "balance": 2300.45,
-        "user_email": "buzz@example.com"
+        "user_email": "buzz@example.com",
     },
     {
         "number": "88990033",
         "name": "Capital One",
         "balance": 1567.88,
-        "user_email": "jessie@example.com"
+        "user_email": "jessie@example.com",
     },
-
 ]
 
 
@@ -62,7 +61,8 @@ def seed_db():
         for user in USERS:
             # Check if user already exists
             existing_user = db.session.scalars(
-                db.select(User).where(User.email == user["email"])).first()
+                db.select(User).where(User.email == user["email"])
+            ).first()
             # If not, create user
             if not existing_user:
                 # Hash the pw before putting in the db
@@ -75,7 +75,7 @@ def seed_db():
                     role=user["role"],
                     password_hash=hashed_password,
                     user_lockout=user["user_lockout"],
-                    total_failed_logins=user["total_failed_logins"]
+                    total_failed_logins=user["total_failed_logins"],
                 )
                 # Add new user to db session
                 db.session.add(new_user)
@@ -90,21 +90,21 @@ def seed_db():
                 db.select(Account)
                 .join(Account.user)
                 .where(
-                    Account.number == acct["number"],
-                    User.email == acct["user_email"]
+                    Account.number == acct["number"], User.email == acct["user_email"]
                 )
             ).first()
             # If not, create acct
             if not existing_acct:
                 # Find user
-                acct_user = db.session.scalars(db.select(User).where(
-                    User.email == acct["user_email"])).first()
+                acct_user = db.session.scalars(
+                    db.select(User).where(User.email == acct["user_email"])
+                ).first()
                 # Create new acct from acct model
                 new_acct = Account(
                     number=acct["number"],
                     name=acct["name"],
                     balance=acct["balance"],
-                    user_id=acct_user.id
+                    user_id=acct_user.id,
                 )
                 # Add new acct to db session
                 db.session.add(new_acct)
