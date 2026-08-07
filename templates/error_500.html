@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="mainSection">
+        <h1>Internal Server Error</h1>
+        <div>
+            <p>An unexpected error occurred.</p>
+            <div class="directions">
+                <p>
+                    Return to <a href="{{ url_for('home') }}">Home</a>
+                </p>
+            </div>
+        </div>
+        <!-- Debugger error message: -->
+        <!-- {{ error_message }} -->
+    </div>
+{% endblock content %}

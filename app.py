@@ -8,6 +8,7 @@ from routes.login import login_bp
 from routes.admin import admin_bp
 from routes.account import account_bp
 from routes.register import register_bp
+from routes.toggle import toggle_bp
 
 # For env variables
 load_dotenv()
@@ -43,11 +44,29 @@ def set_current_user():
     return dict(current_user=user)
 
 
+# Error Handlers
+@app.errorhandler(500)
+def handle_exception(e):
+    current_state = session.get("toggle_misexc", "vulnerable")
+    detailed_error = getattr(e, "original_exception", e)
+
+    if current_state == "vulnerable":
+        return render_template(
+            "error_500.html",
+            error_message=str(detailed_error)
+        ), 500
+    else:
+        return render_template(
+            "error_500.html"
+        ), 500
+
+
 # Register blueprints
 app.register_blueprint(login_bp)
 app.register_blueprint(admin_bp)
 app.register_blueprint(account_bp)
 app.register_blueprint(register_bp)
+app.register_blueprint(toggle_bp)
 
 
 # Routes
