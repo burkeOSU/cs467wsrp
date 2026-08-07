@@ -1,5 +1,5 @@
 {% macro toggle(security) %}
-    <div class="toggleBtnContainer">
+<div class="toggleBtnContainer">
         <label class="toggleBtn {{ 'selected' if security == 'vulnerable' }}">
                 <input type="radio"
                         name="security_choice"
@@ -14,5 +14,5 @@
                         {{ 'checked' if security == 'hardened' }}>
                 Hardened
         </label>
-    </div>
+</div>
 {% endmacro %}

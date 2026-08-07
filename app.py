@@ -91,8 +91,7 @@ def create_account_insecure(account_data):
         db.session.rollback()
         # Displays raw error message, giving valuable information to attacker
         return (
-            render_template("new_account.html", error=str(e),
-                            security="vulnerable"),
+            render_template("new_account.html", error=str(e), security="vulnerable"),
             500,
         )
 
@@ -181,8 +180,7 @@ def login():
             )
 
         # Find user with specified email
-        user = db.session.scalars(
-            db.select(User).where(User.email == email)).first()
+        user = db.session.scalars(db.select(User).where(User.email == email)).first()
 
         # Secure code
         # Check user is lockedout before checking password
@@ -245,8 +243,7 @@ def reset_lockout():
             403,
         )
 
-    user = db.session.scalars(
-        db.select(User).where(User.email == email)).first()
+    user = db.session.scalars(db.select(User).where(User.email == email)).first()
 
     # Invalid email
     if not user:
@@ -309,8 +306,7 @@ def admin():
         if user_id:
             # Send error message that id did not match user
             return (
-                render_template(
-                    "admin.html", error="No user exists with that id."),
+                render_template("admin.html", error="No user exists with that id."),
                 400,
             )
         else:
@@ -328,12 +324,12 @@ def accounts():
             session["admin_hardened"] = False
         elif security_choice == "hardened":
             session["admin_hardened"] = True
-            
+
     # Can retrieve accounts data in template for global current user
     if session.get("admin_hardened", True):
-        security = "hardened" 
+        security = "hardened"
     else:
-        security = "vulnerable" 
+        security = "vulnerable"
     return render_template("accounts.html", security=security)
 
 
@@ -456,8 +452,7 @@ def register():
         # Ensure all attributes are present
         if not email or not first_name or not last_name or not password:
             return (
-                render_template("register.html",
-                                error="Missing one or more fields."),
+                render_template("register.html", error="Missing one or more fields."),
                 400,
             )
 
