@@ -48,10 +48,14 @@
             </tbody>
         </table>
         <div class="btnContainer">
-            <a href="{{ url_for("new_account") }}" class="btn">New Account</a>
-        </div>
-        <div class="btnContainer">
-            <button type="submit" class="button">Set Hardened Security Mode</button>
+            {% set chosen = security if security else 'vulnerable'}
+            <button type="submit" class="button">
+                {% if chosen == 'hardened %'}
+                    Set Hardened Security Mode
+                {% else %}
+                    Set Vulnerable Security Mode
+                {% endif %}
+            </button>
         </div>
     </div>
 {% endblock content %}
