@@ -164,7 +164,8 @@ def login():
             db.select(User).where(User.email == email)).first()
         
         # Secure code
-        if security_choice == "hardened":
+        # Check user is lockedout before checking password
+        if security_choice == "hardened" and user and user.user_lockout:
             # Permenant lockout
             if user and user.user_lockout:
                 return render_template(
@@ -175,17 +176,19 @@ def login():
         if user and user.check_password(password):
             session["user_id"] = user.id
             session["user_fname"] = user.first_name
+            return redirect(url_for("accounts"))
 
         # Secure code
-        if user and security_choice == "hardened":    
-            # Unsuccessful login = increment total_failed_logins
-            user.total_failed_logins += 1
-            if user.total_failed_logins >= 3:
-                user.user_lockout = True
-            db.session.commit()
+        else:
+            if user and security_choice == "hardened":    
+                # Unsuccessful login = increment total_failed_logins
+                user.total_failed_logins += 1
+                if user.total_failed_logins >= 3:
+                    user.user_lockout = True
+                db.session.commit()
 
         return render_template(
-            "login.html", error="Invalid email or password.", security_choice="hardened", email=email
+            "login.html", error="Invalid email or password.", security_choice=security_choice, email=email
         ), 401
 
 
@@ -196,11 +199,6 @@ def reset_lockout():
     # Get form data
     security_choice = request.form.get("security_choice")
     email = request.form.get("email")
-
-    if security_choice == "vulnerable":
-        return render_template(
-            "login.html", error="Reset only available in Hardened Security mode.", security_choice="vulnerable"
-        ), 403
 
     # Missing email    
     if not email:
