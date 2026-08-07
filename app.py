@@ -328,8 +328,13 @@ def accounts():
             session["admin_hardened"] = False
         elif security_choice == "hardened":
             session["admin_hardened"] = True
+            
     # Can retrieve accounts data in template for global current user
-    return render_template("accounts.html")
+    if session.get("admin_hardened", True):
+        security = "hardened" 
+    else:
+        security = "vulnerable" 
+    return render_template("accounts.html", security=security)
 
 
 # Attack: Error-Based SQLi
