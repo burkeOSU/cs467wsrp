@@ -50,7 +50,7 @@
         <div class="btnContainer">
             {% set chosen = security if security else 'vulnerable'}
             <button type="submit" class="button">
-                {% if chosen == 'hardened %'}
+                {% if chosen == 'hardened' %}
                     Set Hardened Security Mode
                 {% else %}
                     Set Vulnerable Security Mode
