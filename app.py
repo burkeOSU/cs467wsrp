@@ -287,8 +287,7 @@ def admin():
             return redirect(url_for("login"))
 
         # Check user role is admin
-        current_user_id = session.get("user_id")
-        current_user = db.session.get(User, current_user_id)
+        current_user = db.session.get(User, session["user_id"])
         if current_user.role.value != "admin":
             return render_template("access_denied.html"), 403
 
@@ -299,8 +298,6 @@ def admin():
         user = result.fetchone()
     else:
         user = None
-    # Secure code
-    # user = db.session.get(User, user_id) if user_id else None
 
     if user:
         # If user was found with matching id, get their accounts and return

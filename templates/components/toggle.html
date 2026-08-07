@@ -1,19 +1,18 @@
 {% macro toggle(security) %}
     <div class="toggleBtnContainer">
-        <button class="toggleBtn {{ 'selected' if security == 'vulnerable' }}"
-                type="button"
-                data-value="vulnerable"
-                disabled>
+        <label class="toggleBtn {{ 'selected' if security == 'vulnerable' }}">
+                <input type="radio"
+                        name="security_choice"
+                        value="vulnerable"
+                        {{ 'checked' if security == 'vulnerable' }}>
                 Vulnerable
-        </button>
-        <button class="toggleBtn {{ 'selected' if security == 'hardened' }}"
-                type="button"
-                data-value="hardened">
+        </label>
+        <label class="toggleBtn {{ 'selected' if security == 'hardened' }}">
+                <input type="radio"
+                        name="security_choice"
+                        value="hardened"
+                        {{ 'checked' if security == 'hardened' }}>
                 Hardened
-        </button>
+        </label>
     </div>
-    <input type="hidden"
-            id="securityChoice"
-            name="security_choice"
-            value="{{ security }}">
 {% endmacro %}
