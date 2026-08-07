@@ -8,21 +8,27 @@ USERS = [
         "first_name": "Admin",
         "last_name": "Istrator",
         "role": "admin",
-        "password": "password"
+        "password": "password",
+        "user_lockout": False,
+        "total_failed_logins": 0
     },
     {
         "email": "buzz@example.com",
         "first_name": "Buzz",
         "last_name": "Lightyear",
         "role": "customer",
-        "password": "buzzPassword"
+        "password": "buzzPassword",
+        "user_lockout": False,
+        "total_failed_logins": 0
     },
     {
         "email": "jessie@example.com",
         "first_name": "Jessie",
         "last_name": "Cowgirl",
         "role": "customer",
-        "password": "jessiePassword"
+        "password": "jessiePassword",
+        "user_lockout": False,
+        "total_failed_logins": 0
     },
 ]
 
@@ -67,7 +73,9 @@ def seed_db():
                     first_name=user["first_name"],
                     last_name=user["last_name"],
                     role=user["role"],
-                    password_hash=hashed_password
+                    password_hash=hashed_password,
+                    user_lockout=user["user_lockout"],
+                    total_failed_logins=user["total_failed_logins"]
                 )
                 # Add new user to db session
                 db.session.add(new_user)

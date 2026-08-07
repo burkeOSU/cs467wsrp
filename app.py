@@ -140,6 +140,7 @@ def home():
     return render_template("index.html")
 
 
+# Attack: Brute Force
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "GET":
@@ -154,61 +155,82 @@ def login():
 
         # Check that all form data is present
         if not email or not password:
-            return {"Error: Missing email or password."}, 400
-        
-        # Secure code
-        if security_choice == "hardened":
-            # Set lockout time remaining
-            now = int(time.time())
-            lockout_time = session.get("lockout_time_seconds", 0)
-
-            if lockout_time > now:
-                remaining = lockout_time - now
-                # HTTP 429 = "Too Many Requests" error
-                return render_template(
-                "login.html", error=f"Too many failed login attempts. Please try again in {remaining} seconds."
-            ), 429
-            # After 30 seconds, reset lockout timer and failed attempt counter
-            if lockout_time > 0 and lockout_time <= now:
-                session["total_failed_logins"] = 0
-                session["lockout_time_seconds"] = 0
+            return render_template(
+                "login.html", error=f"Error: Missing email or password.", security_choice=security_choice, email=email
+            ), 400
 
         # Find user with specified email
         user = db.session.scalars(
             db.select(User).where(User.email == email)).first()
+        
+        # Secure code
+        if security_choice == "hardened":
+            # Permenant lockout
+            if user and user.user_lockout:
+                return render_template(
+                    "login.html", error=f"Too many failed login attempts. The account is now locked.", security_choice="hardened", email=email
+                ), 429
 
         # Validate password if user exists
         if user and user.check_password(password):
             session["user_id"] = user.id
             session["user_fname"] = user.first_name
-            # Secure code
-            if security_choice == "hardened":
-                # Successful login = reset lockout parameters
-                session["total_failed_logins"] = 0
-                session["lockout_time_seconds"] = 0
-            if user.role == UserRole.ADMIN:
-                return redirect(url_for("admin"))
-            else:
-                return redirect(url_for("accounts"))
 
         # Secure code
-        if security_choice == "hardened":    
+        if user and security_choice == "hardened":    
             # Unsuccessful login = increment total_failed_logins
-            total_failed_logins = session.get("total_failed_logins", 0) + 1
-            session["total_failed_logins"] = total_failed_logins
-            
-            if total_failed_logins >=3:
-                session["lockout_time_seconds"] = now + 30
-                remaining = session["lockout_time_seconds"] - now
-                return render_template(
-                "login.html", error=f"Too many failed login attempts. Please try again in {remaining} seconds."
-            ), 429
+            user.total_failed_logins += 1
+            if user.total_failed_logins >= 3:
+                user.user_lockout = True
+            db.session.commit()
 
         return render_template(
-            "login.html", error="Invalid email or password."
+            "login.html", error="Invalid email or password.", security_choice="hardened", email=email
         ), 401
 
 
+# Attack: Brute Force
+@app.route("/reset_lockout", methods=["POST"])
+def reset_lockout():
+    # Reset lockout for account/email
+    # Get form data
+    security_choice = request.form.get("security_choice")
+    email = request.form.get("email")
+
+    if security_choice == "vulnerable":
+        return render_template(
+            "login.html", error="Reset only available in Hardened Security mode.", security_choice="vulnerable"
+        ), 403
+
+    # Missing email    
+    if not email:
+        return render_template(
+                        "login.html", error="Please enter a valid email."
+                    ), 400
+        return render_template(
+            "login.html", error="Please enter a valid email.", security_choice="hardened"
+        ), 403
+
+    user = db.session.scalars(
+        db.select(User).where(User.email == email)).first()
+
+    # Invalid email
+    if not user:
+        return render_template(
+            "login.html", error="Please enter a valid email.", security_choice="hardened"
+        ), 400
+
+    # Reset lockout
+    user.user_lockout = False
+    user.total_failed_logins = 0
+    db.session.commit()
+
+    # HTTP 200: Request Successful
+    return render_template(
+        "login.html", error="Account lockout successfully reset.", security_choice="hardened", email=email
+    ), 200
+
+# Attack: Authorization Bypass
 @app.route("/admin")
 def admin():
     # User account specific hardening for Auth Bypass attacks
@@ -250,7 +272,7 @@ def admin():
             # Render initial page before user id selection by admin user
             return render_template("admin.html")
 
-
+# Attack: Authorization Bypass
 @app.route("/accounts", methods=["GET"])
 def accounts():
     security_choice = request.form.get("security_choice")
@@ -263,6 +285,7 @@ def accounts():
     return render_template("accounts.html")
 
 
+# Attack: Error-Based SQLi
 @app.route("/new_account", methods=["GET", "POST"])
 def new_account():
     # Ensure user is logged in before accessing this page
@@ -297,6 +320,7 @@ def new_account():
             return create_account_secure(data)
 
 
+# Attack: Stored Cross-Site Scripting
 @app.route("/edit_account/<int:id>", methods=["GET", "POST"])
 def edit_account(id):
     # Ensure user is logged in before accessing this page
@@ -352,7 +376,7 @@ def edit_account(id):
                 security=security_choice
             ), 500
 
-
+# Attack: Mishandled Exception
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "GET":

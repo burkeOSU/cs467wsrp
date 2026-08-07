@@ -20,6 +20,10 @@ class User(db.Model):
                      default=UserRole.CUSTOMER, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
 
+    # Lockout function (Prevent Brute Force/BurpIntruder)
+    user_lockout = db.Column(db.Boolean, default=False, nullable=False)
+    total_failed_logins = db.Column(db.Integer, default=0, nullable=False)
+
     account = db.relationship('Account', back_populates='user', lazy=True)
 
     def set_password(self, password):
