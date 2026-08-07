@@ -279,8 +279,9 @@ def reset_lockout():
 # Attack: Authorization Bypass
 @app.route("/admin")
 def admin():
+
     # User account specific hardening for Auth Bypass attacks
-    if session.get("admin_hardened"):
+    if session.get("admin_hardened", True):
         # Check user is logged in
         if "user_id" not in session:
             return redirect(url_for("login"))
@@ -321,14 +322,15 @@ def admin():
 
 
 # Attack: Authorization Bypass
-@app.route("/accounts", methods=["GET"])
+@app.route("/accounts", methods=["GET", "POST"])
 def accounts():
-    security_choice = request.form.get("security_choice")
-    # Set security toggle for Auth Bypass attack on /admin
-    if security_choice == "vulnerable":
-        session["admin_hardened"] = False
-    if security_choice == "hardened":
-        session["admin_hardened"] = True
+    if request.method == "POST":
+        security_choice = request.form.get("security_choice")
+        # Set security toggle for Auth Bypass attack on /admin
+        if security_choice == "vulnerable":
+            session["admin_hardened"] = False
+        elif security_choice == "hardened":
+            session["admin_hardened"] = True
     # Can retrieve accounts data in template for global current user
     return render_template("accounts.html")
 
