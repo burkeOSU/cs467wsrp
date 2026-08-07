@@ -7,7 +7,7 @@
         {% else %}
             <h1>Example's Accounts</h1>
         {% endif %}
-                <form class="form" action="{{ url_for("accounts") }}" method="post">
+                <form class="form" action="{{ url_for('accounts') }}" method="post">
             {{ toggle(security) if security else toggle("vulnerable") }}
         <table class="acctTable">
             <thead>
@@ -30,7 +30,7 @@
                         </tr>
                     {% endfor %}
                     <div class="btnContainer">
-                        <a href="{{ url_for("new_account") }}" class="btn">New Account</a>
+                        <a href="{{ url_for('new_account') }}" class="btn">New Account</a>
                     </div>
                 {% else %}
                     <!-- Example data to display when no user is logged in -->
