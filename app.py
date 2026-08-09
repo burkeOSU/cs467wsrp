@@ -174,7 +174,6 @@ def login():
                     "login.html",
                     error=f"Error: Missing email or password.",
                     security_choice=security_choice,
-                    email=email,
                 ),
                 400,
             )
@@ -182,30 +181,39 @@ def login():
         # Find user with specified email
         user = db.session.scalars(db.select(User).where(User.email == email)).first()
 
+        if not user:
+            return (
+                render_template(
+                    "login.html",
+                    error="Please enter a valid email.",
+                    security_choice=security_choice,
+                ),
+                401,
+            )
+
         # Secure code
         # Check user is lockedout before checking password
-        if security_choice == "hardened" and user and user.user_lockout:
-            # Permenant lockout
-            if user and user.user_lockout:
-                return (
-                    render_template(
-                        "login.html",
-                        error=f"Too many failed login attempts. The account is now locked.",
-                        security_choice="hardened",
-                        email=email,
-                    ),
-                    429,
-                )
+        if security_choice == "hardened" and user.user_lockout:
+            # Permanent lockout
+            return (
+                render_template(
+                    "login.html",
+                    error=f"Too many failed login attempts. The account is now locked.",
+                    security_choice="hardened",
+                    locked=user.user_lockout
+                ),
+                429,
+            )
 
-        # Validate password if user exists
-        if user and user.check_password(password):
+        # Validate password
+        if user.check_password(password):
             session["user_id"] = user.id
             session["user_fname"] = user.first_name
             return redirect(url_for("accounts"))
 
         # Secure code
         else:
-            if user and security_choice == "hardened":
+            if security_choice == "hardened":
                 # Unsuccessful login = increment total_failed_logins
                 user.total_failed_logins += 1
                 if user.total_failed_logins >= 3:
@@ -215,9 +223,8 @@ def login():
         return (
             render_template(
                 "login.html",
-                error="Invalid email or password.",
+                error="Invalid password.",
                 security_choice=security_choice,
-                email=email,
             ),
             401,
         )
@@ -227,20 +234,17 @@ def login():
 @app.route("/reset_lockout", methods=["POST"])
 def reset_lockout():
     # Reset lockout for account/email
-    # Get form data
-    security_choice = request.form.get("security_choice")
     email = request.form.get("email")
 
     # Missing email
     if not email:
-        return render_template("login.html", error="Please enter a valid email."), 400
         return (
             render_template(
                 "login.html",
                 error="Please enter a valid email.",
                 security_choice="hardened",
             ),
-            403,
+            400,
         )
 
     user = db.session.scalars(db.select(User).where(User.email == email)).first()
@@ -267,7 +271,6 @@ def reset_lockout():
             "login.html",
             error="Account lockout successfully reset.",
             security_choice="hardened",
-            email=email,
         ),
         200,
     )
@@ -317,20 +320,20 @@ def admin():
 # Attack: Authorization Bypass
 @app.route("/accounts", methods=["GET", "POST"])
 def accounts():
-    if request.method == "POST":
-        security_choice = request.form.get("security_choice")
-        # Set security toggle for Auth Bypass attack on /admin
-        if security_choice == "vulnerable":
-            session["admin_hardened"] = False
-        elif security_choice == "hardened":
-            session["admin_hardened"] = True
-
     # Can retrieve accounts data in template for global current user
-    if session.get("admin_hardened", True):
-        security = "hardened"
-    else:
-        security = "vulnerable"
-    return render_template("accounts.html", security=security)
+    return render_template("accounts.html")
+
+
+@app.route("/toggle_auth_bypass", methods=["POST"])
+def toggle_auth_bypass():
+    security_choice = request.form.get("security_choice")
+    # Set security toggle for Auth Bypass attack on /admin
+    if security_choice == "vulnerable":
+        session["admin_hardened"] = False
+    elif security_choice == "hardened":
+        session["admin_hardened"] = True
+
+    return redirect(url_for("accounts"))
 
 
 # Attack: Error-Based SQLi

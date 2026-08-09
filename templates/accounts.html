@@ -7,53 +7,56 @@
     {% else %}
     <h1>Example's Accounts</h1>
     {% endif %}
-    <form class="form" action="{{ url_for('accounts') }}" method="post">
-        {{ toggle(security) if security else toggle('vulnerable') }}
-        <table class="acctTable">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Acct Number</th>
-                    <th>Balance</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                {% if current_user %}
-                <!-- Data for currently logged in user -->
-                {% for acct in current_user.account %}
-                <tr>
-                    <td>{{ acct.name }}</td>
-                    <td>{{ acct.number }}</td>
-                    <td>{{ acct.balance }}</td>
-                    <td><a
-                            href="{{ url_for('edit_account', id=acct.id) }}">&#9998;</a></td>
-                </tr>
-                {% endfor %}
-                <div class="btnContainer">
-                    <a href="{{ url_for('new_account') }}" class="btn">New
-                        Account</a>
-                </div>
-                {% else %}
-                <!-- Example data to display when no user is logged in -->
-                <tr>
-                    <td>Bank 1</td>
-                    <td>1480</td>
-                    <td>100.00</td>
-                </tr>
-                <tr>
-                    <td>Bank 2</td>
-                    <td>2467</td>
-                    <td>120.00</td>
-                </tr>
-                {% endif %}
-            </tbody>
-        </table>
+    <form class="form" action="{{ url_for('toggle_auth_bypass') }}" method="post">
+        {{ toggle("hardened") if session["admin_hardened"] else toggle('vulnerable') }}
         <div class="btnContainer">
-            {% set chosen = security if security else 'vulnerable' %}
-            <button type="submit" class="button">
-                Hard Set Security Mode
+            <button type="submit" class="btn">
+                Set Mode
             </button>
         </div>
+    </form>
+    <table class="acctTable">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Acct Number</th>
+                <th>Balance</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if current_user %}
+            <!-- Data for currently logged in user -->
+            {% for acct in current_user.account %}
+            <tr>
+                <td>{{ acct.name }}</td>
+                <td>{{ acct.number }}</td>
+                <td>{{ acct.balance }}</td>
+                <td><a
+                        href="{{ url_for('edit_account', id=acct.id) }}">&#9998;</a></td>
+            </tr>
+            {% endfor %}
+            {% else %}
+            <!-- Example data to display when no user is logged in -->
+            <tr>
+                <td>Bank 1</td>
+                <td>1480</td>
+                <td>100.00</td>
+            </tr>
+            <tr>
+                <td>Bank 2</td>
+                <td>2467</td>
+                <td>120.00</td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
+    {% if current_user %}
+    <div class="btnContainer">
+        <a href="{{ url_for('new_account') }}" class="btn">
+            New Account
+        </a>
     </div>
-    {% endblock content %}
+    {% endif %}
+</div>
+{% endblock content %}
