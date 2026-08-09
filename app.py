@@ -15,16 +15,16 @@ load_dotenv()
 app = Flask(__name__)
 
 # Set up db connection
-DB_USER = os.getenv('DB_USER')
-DB_PASSWORD = os.getenv('DB_PASSWORD')
-DB_HOST = os.getenv('DB_HOST')
-DB_NAME = os.getenv('DB_NAME')
-app.config['SQLALCHEMY_DATABASE_URI'] = (
-    f'mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}'
+DB_USER = os.getenv("DB_USER")
+DB_PASSWORD = os.getenv("DB_PASSWORD")
+DB_HOST = os.getenv("DB_HOST")
+DB_NAME = os.getenv("DB_NAME")
+app.config["SQLALCHEMY_DATABASE_URI"] = (
+    f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}"
 )
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 
 # Bind SQLAlchemy to app
 db.init_app(app)
@@ -38,7 +38,7 @@ with app.app_context():
 # Set up global logged in user based on session for templates to access
 @app.context_processor
 def set_current_user():
-    user_id = session.get('user_id')
+    user_id = session.get("user_id")
     user = db.session.get(User, user_id) if user_id else None
     return dict(current_user=user)
 
