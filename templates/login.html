@@ -26,8 +26,32 @@
         <div id="hintContent" class="content">
             <p>This is hint content.</p>
         </div>
-        <div id="explainContent" class="content">
-            <p>This is explanation content.</p>
+        <div class="btnContainer">
+            <button type="submit" class="btn">Sign In</button>
         </div>
+    </form>
+    {% if error %}
+    <div class="errorMsg">{{ error }}</div>
+    {% endif %}
+</div>
+{% if locked %}
+<form class="form" action="/reset_lockout" method="post">
+    <div class="formDiv">
+        <label for="reset_lockout_email">Email</label>
+        <input type="email" id="reset_lockout_email" name="email" required />
     </div>
+    <div class="btnContainer">
+        <button type="submit" class="btn">Reset Lockout</button>
+    </div>
+</form>
+{% endif %}
+{% include 'components/hint.html' %}
+<div class="lowerSection">
+    <div id="hintContent" class="content">
+        <p>This is hint content.</p>
+    </div>
+    <div id="explainContent" class="content">
+        <p>This is explanation content.</p>
+    </div>
+</div>
 {% endblock content %}
