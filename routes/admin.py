@@ -20,6 +20,8 @@ def admin():
 
     security_choice = request.form.get("security_choice")
     user_id = request.args.get("user_id")
+    user = None
+    
     # Secure code
     if session.get("toggle_sqli_blind") == "hardened":
         if user_id is not None and not user_id.isdigit():
