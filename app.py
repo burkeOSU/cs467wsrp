@@ -9,6 +9,7 @@ from routes.admin import admin_bp
 from routes.account import account_bp
 from routes.register import register_bp
 from routes.toggle import toggle_bp
+from routes.attack import attack_bp
 
 # For env variables
 load_dotenv()
@@ -44,38 +45,6 @@ def set_current_user():
     return dict(current_user=user)
 
 
-# Helper Functions
-def create_account_secure(account_data):
-    # Parameterized inputs to protect against SQL injection
-    stmt = (
-        "INSERT INTO accounts (name, number, balance, user_id)"
-        "VALUES (:name, :number, :balance, :user_id)"
-    )
-    try:
-        # Secure submitting parameterized data
-        db.session.execute(
-            text(stmt),
-            {
-                "name": account_data["name"],
-                "number": account_data["number"],
-                "balance": account_data["balance"],
-                "user_id": account_data["user_id"],
-            },
-        )
-        db.session.commit()
-        return redirect(url_for("accounts"))
-    except Exception:
-        db.session.rollback()
-        # Displays safer generic message instead of raw error msg
-        return (
-            render_template(
-                "new_account.html",
-                error="An error occurred creating the new account.",
-                security="hardened",
-            ),
-            500,
-        )
-
 # Error Handlers
 @app.errorhandler(500)
 def handle_exception(e):
@@ -83,90 +52,15 @@ def handle_exception(e):
     detailed_error = getattr(e, "original_exception", e)
 
     if current_state == "vulnerable":
-        return render_template(
-            "error_500.html",
-            error_message=str(detailed_error)
-        ), 500
-    else:
-        return render_template(
-            "error_500.html"
-        ), 500
-def create_account_insecure(account_data):
-    # Allows for SQL injection
-    stmt = (
-        f"INSERT INTO accounts (name, number, balance, user_id)"
-        f"VALUES ('{account_data['name']}', '{account_data['number']}', "
-        f"{account_data['balance']}, {account_data['user_id']})"
-    )
-    try:
-        # Insecure submitting concatenated raw SQL to db
-        db.session.execute(text(stmt))
-        db.session.commit()
-        return redirect(url_for("accounts"))
-    except Exception as e:
-        db.session.rollback()
-        # Displays raw error message, giving valuable information to attacker
-        return (
-            render_template("new_account.html", error=str(e), security="vulnerable"),
-            500,
-        )
-
-
-def register_insecure(email, first_name, last_name, role, password_hash):
-    # Insecure stmt that allows for SQL injection
-    stmt = (
-        "INSERT INTO users (email, first_name, last_name, role, "
-        "password_hash)"
-        f"VALUES ('{email}', '{first_name}', '{last_name}', '{role}', "
-        f"'{password_hash}')"
-    )
-
-    # Insecure code, not in try/except block
-    result = db.session.execute(text(stmt))
-    db.session.commit()
-    # Retrieve newly created user info to set session variables
-    new_user_id = result.lastrowid
-    user = db.session.get(User, new_user_id)
-    session["user_id"] = user.id
-    session["user_fname"] = user.first_name
-    return redirect(url_for("accounts"))
-
-
-def register_secure(email, first_name, last_name, role, password_hash):
-    # Insecure stmt that allows for SQL injection
-    stmt = (
-        "INSERT INTO users (email, first_name, last_name, role, "
-        "password_hash)"
-        f"VALUES ('{email}', '{first_name}', '{last_name}', '{role}', "
-        f"'{password_hash}')"
-    )
-    # Try/except block to gracefully handle any exceptions
-    try:
-        # Send constructed stmt to database to register user
-        result = db.session.execute(text(stmt))
-        db.session.commit()
-        # Retrieve newly created user info to set session variables
-        new_user_id = result.lastrowid
-        user = db.session.get(User, new_user_id)
-        session["user_id"] = user.id
-        session["user_fname"] = user.first_name
-        return redirect(url_for("accounts"))
-    except BaseException:
-        db.session.rollback()
-        # Appropriate generic error message is displayed back to user
         return (
             render_template(
-                "register.html",
-                error="An error occurred creating the new user.",
-                security="hardened",
-            ),
+                "error_500.html",
+                error_message=str(detailed_error)
+            ), 
             500,
         )
-# Register blueprints
-app.register_blueprint(login_bp)
-app.register_blueprint(admin_bp)
-app.register_blueprint(account_bp)
-app.register_blueprint(register_bp)
+    else:
+        return render_template("error_500.html"), 500
 
 
 # Register blueprints
@@ -175,7 +69,7 @@ app.register_blueprint(admin_bp)
 app.register_blueprint(account_bp)
 app.register_blueprint(register_bp)
 app.register_blueprint(toggle_bp)
-
+app.register_blueprint(attack_bp)
 
 # Routes
 @app.route("/")
@@ -190,4 +84,4 @@ def logout():
 
 
 if __name__ == "__main__":
-    app.run(port=8080, debug=True)
+    app.run(port=8080, debug=False)

@@ -1,7 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, request, session
-from models import User, UserRole
+from models import User
 from database import db
-import time
 
 login_bp = Blueprint('login', __name__)
 
@@ -19,56 +18,110 @@ def login():
 
         # Check that all form data is present
         if not email or not password:
-            return {"Error: Missing email or password."}, 400
-        
-        # Secure code
-        if security_choice == "hardened":
-            # Set lockout time remaining
-            now = int(time.time())
-            lockout_time = session.get("lockout_time_seconds", 0)
-
-            if lockout_time > now:
-                remaining = lockout_time - now
-                # HTTP 429 = "Too Many Requests" error
-                return render_template(
-                "login.html", error=f"Too many failed login attempts. Please try again in {remaining} seconds."
-            ), 429
-            # After 30 seconds, reset lockout timer and failed attempt counter
-            if lockout_time > 0 and lockout_time <= now:
-                session["total_failed_logins"] = 0
-                session["lockout_time_seconds"] = 0
+            return (
+                render_template(
+                    "login.html",
+                    error=f"Error: Missing email or password.",
+                    security_choice=security_choice,
+                ),
+                400,
+            )
 
         # Find user with specified email
-        user = db.session.scalars(
-            db.select(User).where(User.email == email)).first()
+        user = db.session.scalars(db.select(User).where(User.email == email)).first()
 
-        # Validate password if user exists
-        if user and user.check_password(password):
-            session["user_id"] = user.id
-            session["user_fname"] = user.first_name
-            # Secure code
-            if security_choice == "hardened":
-                # Successful login = reset lockout parameters
-                session["total_failed_logins"] = 0
-                session["lockout_time_seconds"] = 0
-            if user.role == UserRole.ADMIN:
-                return redirect(url_for('admin.admin'))
-            else:
-                return redirect(url_for("account.accounts"))
+        if not user:
+            return (
+                render_template(
+                    "login.html",
+                    error="Please enter a valid email.",
+                    security_choice=security_choice,
+                ),
+                401,
+            )
 
         # Secure code
-        if security_choice == "hardened":    
-            # Unsuccessful login = increment total_failed_logins
-            total_failed_logins = session.get("total_failed_logins", 0) + 1
-            session["total_failed_logins"] = total_failed_logins
-            
-            if total_failed_logins >=3:
-                session["lockout_time_seconds"] = now + 30
-                remaining = session["lockout_time_seconds"] - now
-                return render_template(
-                "login.html", error=f"Too many failed login attempts. Please try again in {remaining} seconds."
-            ), 429
+        # Check user is lockedout before checking password
+        if security_choice == "hardened" and user.user_lockout:
+            # Permanent lockout
+            return (
+                render_template(
+                    "login.html",
+                    error=f"Too many failed login attempts. The account is now locked.",
+                    security_choice="hardened",
+                    locked=user.user_lockout
+                ),
+                429,
+            )
 
-        return render_template(
-            "login.html", error="Invalid email or password."
-        ), 401
+        # Validate password
+        if user.check_password(password):
+            session["user_id"] = user.id
+            session["user_fname"] = user.first_name
+            return redirect(url_for("account.accounts"))
+
+        # Secure code
+        else:
+            if security_choice == "hardened":
+                # Unsuccessful login = increment total_failed_logins
+                user.total_failed_logins += 1
+                if user.total_failed_logins >= 3:
+                    user.user_lockout = True
+                db.session.commit()
+
+        return (
+            render_template(
+                "login.html",
+                error="Invalid password.",
+                security_choice=security_choice,
+            ),
+            401,
+        )
+
+
+# Attack: Brute Force
+@login_bp.route("/reset_lockout", methods=["POST"])
+def reset_lockout():
+    # Reset lockout for account/email
+    email = request.form.get("email")
+
+    # Missing email
+    if not email:
+        return (
+            render_template(
+                "login.html",
+                error="Please enter a valid email.",
+                security_choice="hardened",
+                locked=True
+            ),
+            400,
+        )
+
+    user = db.session.scalars(db.select(User).where(User.email == email)).first()
+
+    # Invalid email
+    if not user:
+        return (
+            render_template(
+                "login.html",
+                error="Please enter a valid email.",
+                security_choice="hardened",
+                locked=True
+            ),
+            400,
+        )
+
+    # Reset lockout
+    user.user_lockout = False
+    user.total_failed_logins = 0
+    db.session.commit()
+
+    # HTTP 200: Request Successful
+    return (
+        render_template(
+            "login.html",
+            error="Account lockout successfully reset.",
+            security_choice="hardened",
+        ),
+        200,
+    )

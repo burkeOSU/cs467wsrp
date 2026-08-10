@@ -4,9 +4,9 @@
     <div class="mainSection">
         <h1>Register</h1>
         <form action="{{ url_for('toggle.toggle_misexc') }}" method="post">
-            {{ toggle("vulnerable") if session["toggle_misexc"] == "vulnerable" else toggle("hardened") }}
+            {{ toggle("hardened") if session.get("toggle_misexc") == "hardened" else toggle("vulnerable") }}
             <div class="btnContainer">
-                <button type="submit" class="btn sessionToggleBtn">Select</button>
+                <button type="submit" class="btn sessionToggleBtn">Set Mode</button>
             </div>
         </form>
         <form class="form" action="{{ url_for('register.register') }}" method="post">

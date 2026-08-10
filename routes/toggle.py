@@ -2,6 +2,17 @@ from flask import Blueprint, redirect, url_for, request, session
 
 toggle_bp = Blueprint('toggle', __name__)
 
+@toggle_bp.route("/toggle_auth_bypass", methods=["POST"])
+def toggle_auth_bypass():
+    security_choice = request.form.get("security_choice")
+    # Set security toggle for Auth Bypass attack on /admin
+    if security_choice == "vulnerable":
+        session["admin_hardened"] = False
+    elif security_choice == "hardened":
+        session["admin_hardened"] = True
+
+    return redirect(url_for("account.accounts"))
+
 @toggle_bp.route("/toggle_misexc", methods=["POST"])
 def toggle_misexc():
     # Get the selection from the user and set the session variable
@@ -11,4 +22,4 @@ def toggle_misexc():
     else:
         session["toggle_misexc"] = "hardened"
 
-    return redirect(url_for('register.register'))
+    return redirect(url_for("register.register"))
