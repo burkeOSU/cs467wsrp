@@ -37,10 +37,10 @@ def register():
         password_hash = generate_password_hash(password)
         role = UserRole.CUSTOMER.value
 
-        if security == "vulnerable":
+        if not session["toggle_misexc"] or session["toggle_misexc"] == "vulnerable":
             return register_insecure(email, first_name, last_name, role, password_hash)
 
-        if security == "hardened":
+        if session["toggle_misexc"] == "hardened":
             return register_secure(email, first_name, last_name, role, password_hash)
 
 
