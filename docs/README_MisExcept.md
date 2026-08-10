@@ -46,6 +46,7 @@ errors can take place when creating the new user and saving it to the database.
     session["user_fname"] = user.first_name
     return redirect(url_for("account.accounts"))
 ```
+
 Also, an error should be handled gracefully and not trigger the default 500 error page.
 If it does, error messages should not be included in the 500 error page template. Despite
 this making debugging easier in production, it introduces a vulnerability, as an attacker
