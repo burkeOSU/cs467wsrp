@@ -7,12 +7,6 @@ account_bp = Blueprint('account', __name__)
 
 @account_bp.route("/accounts", methods=["GET"])
 def accounts():
-    security_choice = request.form.get("security_choice")
-    # Set security toggle for Auth Bypass attack on /admin
-    if security_choice == "vulnerable":
-        session["admin_hardened"] = False
-    if security_choice == "hardened":
-        session["admin_hardened"] = True
     # Can retrieve accounts data in template for global current user
     return render_template("accounts.html")
 
@@ -29,7 +23,7 @@ def new_account():
     if request.method == "POST":
         security_choice = request.form.get("security_choice")
         data = {
-            "user_id": session.get('user_id'),
+            "user_id": session.get("user_id"),
             "name": request.form.get("name"),
             "number": request.form.get("number"),
             "balance": request.form.get("balance")
@@ -110,33 +104,43 @@ def edit_account(id):
 # Helper Functions
 def create_account_secure(account_data):
     # Parameterized inputs to protect against SQL injection
-    stmt = ("INSERT INTO accounts (name, number, balance, user_id)"
-            "VALUES (:name, :number, :balance, :user_id)")
+    stmt = (
+        "INSERT INTO accounts (name, number, balance, user_id)"
+        "VALUES (:name, :number, :balance, :user_id)"
+    )
     try:
         # Secure submitting parameterized data
-        db.session.execute(text(stmt), {
-            "name": account_data["name"],
-            "number": account_data["number"],
-            "balance": account_data["balance"],
-            "user_id": account_data["user_id"]
-        })
+        db.session.execute(
+            text(stmt), 
+            {
+                "name": account_data["name"],
+                "number": account_data["number"],
+                "balance": account_data["balance"],
+                "user_id": account_data["user_id"]
+            },
+        )
         db.session.commit()
         return redirect(url_for("account.accounts"))
     except Exception:
         db.session.rollback()
         # Displays safer generic message instead of raw error msg
-        return render_template(
-            "new_account.html",
-            error="An error occurred creating the new account.",
-            security="hardened"
-        ), 500
+        return (
+            render_template(
+                "new_account.html",
+                error="An error occurred creating the new account.",
+                security="hardened"
+            ), 
+            500,
+        )
 
 
 def create_account_insecure(account_data):
     # Allows for SQL injection
-    stmt = (f"INSERT INTO accounts (name, number, balance, user_id)"
-            f"VALUES ('{account_data['name']}', '{account_data['number']}', "
-            f"{account_data['balance']}, {account_data['user_id']})")
+    stmt = (
+        f"INSERT INTO accounts (name, number, balance, user_id)"
+        f"VALUES ('{account_data['name']}', '{account_data['number']}', "
+        f"{account_data['balance']}, {account_data['user_id']})"
+    )
     try:
         # Insecure submitting concatenated raw SQL to db
         db.session.execute(text(stmt))
@@ -145,7 +149,10 @@ def create_account_insecure(account_data):
     except Exception as e:
         db.session.rollback()
         # Displays raw error message, giving valuable information to attacker
-        return render_template(
-            "new_account.html", error=str(e),
-            security="vulnerable"
-        ), 500
+        return (
+            render_template(
+                "new_account.html", 
+                error=str(e),
+                security="vulnerable"
+            ), 500
+        )

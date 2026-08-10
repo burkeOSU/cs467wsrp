@@ -37,10 +37,10 @@ def register():
         password_hash = generate_password_hash(password)
         role = UserRole.CUSTOMER.value
 
-        if not session["toggle_misexc"] or session["toggle_misexc"] == "vulnerable":
+        if not session.get("toggle_misexc") or session.get("toggle_misexc") == "vulnerable":
             return register_insecure(email, first_name, last_name, role, password_hash)
 
-        if session["toggle_misexc"] == "hardened":
+        if session.get("toggle_misexc") == "hardened":
             return register_secure(email, first_name, last_name, role, password_hash)
 
 
@@ -87,8 +87,11 @@ def register_secure(email, first_name, last_name, role, password_hash):
     except BaseException:
         db.session.rollback()
         # Appropriate generic error message is displayed back to user
-        return render_template(
-            "register.html",
-            error="An error occurred creating the new user.",
-            security="hardened"
-        ), 500
+        return (
+            render_template(
+                "register.html",
+                error="An error occurred creating the new user.",
+                security="hardened"
+            ), 
+            500,
+        )
