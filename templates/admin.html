@@ -1,7 +1,9 @@
+{% from "components/toggle.html" import toggle %}
 {% extends "base.html" %}
 {% block content %}
     <div class="mainSection">
         <form class="form" action="{{ url_for('admin.admin') }}" method="get">
+            {{ toggle(security) if security else toggle("vulnerable") }}
             <div class="formDiv">
                 <label for="user_id">Enter a user id:</label>
                 <input type="text" id="user_id" name="user_id" required />

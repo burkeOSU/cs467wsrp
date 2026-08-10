@@ -20,15 +20,17 @@ def admin():
 
     security_choice = request.form.get("security_choice")
     user_id = request.args.get("user_id")
-    if user_id:
-        stmt = f"SELECT * FROM users WHERE id = '{user_id}'"
-        result = db.session.execute(text(stmt))
-        user = result.fetchone()
-    else:
-        user = None
     # Secure code
     if security_choice == "hardened":
         user = db.session.get(User, user_id) if user_id else None
+    else:
+        if user_id:
+            stmt = f"SELECT * FROM users WHERE id = '{user_id}'"
+            result = db.session.execute(text(stmt))
+            user = result.fetchone()
+        else:
+            user = None
+
 
     if user:
         # If user was found with matching id, get their accounts and return
