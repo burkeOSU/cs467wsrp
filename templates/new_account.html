@@ -36,11 +36,35 @@
     {% include 'components/hint.html' %}
     <div class="lowerSection">
         <div id="hintContent" class="content">
-            <p>' or ExtractValue(1, concat(':', (SELECT password_hash FROM users WHERE role='admin' LIMIT 1))) or '</p>
-            <p>Input a very long string for name (>100 chars) to generate an error.</p>
+            <h2>Error-Based SQL Injection</h2>
+            <div class="directions">
+                <ul>
+                    <li>
+                        Enter the following in the Name field:
+                        <br>
+                        ' or ExtractValue(1, concat(':', (SELECT password_hash FROM users WHERE role='admin' LIMIT 1))) or '
+                    </li>
+                    <li>
+                        Fill out the remainder of the form, then submit.
+                    </li>
+                </ul>
+            </div>
         </div>
         <div id="explainContent" class="content">
-            <p>This is explanation content.</p>
+            <h2>Error-Based SQL Injection</h2>
+            <div class="directions">
+                <ul>
+                    <li>
+                        See the
+                        <a
+                            href="https://github.com/burkeOSU/cs467wsrp/blob/main/docs/README_ErrBasedSQLi.md"
+                            target="blank">
+                            README
+                        </a>
+                        file for a detailed explanation.
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
 {% endblock content %}
