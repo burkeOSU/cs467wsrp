@@ -21,7 +21,7 @@ def admin():
     security_choice = request.form.get("security_choice")
     user_id = request.args.get("user_id")
     # Secure code
-    if session["toggle_sqli_blind"] == "hardened":
+    if session.get("toggle_sqli_blind") == "hardened":
         if not user_id.isdigit():
             return (
                 render_template("admin.html", error="Invalid user ID, only numerical characters accepted."),
