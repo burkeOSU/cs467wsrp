@@ -42,7 +42,7 @@ errors can take place when creating the new user and saving it to the database.
     user = db.session.get(User, new_user_id)
     session["user_id"] = user.id
     session["user_fname"] = user.first_name
-    return redirect(url_for("accounts"))
+    return redirect(url_for("account.accounts"))
 ```
 
 ## Code Improvement
@@ -68,7 +68,7 @@ without revealing sensitive information about the database.
         user = db.session.get(User, new_user_id)
         session["user_id"] = user.id
         session["user_fname"] = user.first_name
-        return redirect(url_for("accounts"))
+        return redirect(url_for("account.accounts"))
     except BaseException:
         db.session.rollback()
         # Appropriate generic error message is displayed back to user
