@@ -20,7 +20,7 @@ def admin():
 
     if request.method == "POST":
         security_choice = request.form.get("security_choice")
-        user_id = request.args.get("user_id")
+        user_id = request.form.get("user_id")
         user = None
         
         # Secure code
@@ -56,3 +56,5 @@ def admin():
             else:
                 # Render initial page before user id selection by admin user
                 return render_template("admin.html")
+
+    return render_template("admin.html")

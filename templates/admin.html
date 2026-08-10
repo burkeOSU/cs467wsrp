@@ -10,13 +10,16 @@
                 </button>
             </div>
         </form>
-        <div class="formDiv">
-            <label for="user_id">Enter a user id:</label>
-            <input type="text" id="user_id" name="user_id" required />
-        </div>
-        <div class="btnContainer">
-            <button type="submit" class="btn">Submit</button>
-        </div>
+
+        <form class="form" action="{{ url_for('admin.admin') }}" method="post">
+            <div class="formDiv">
+                <label for="user_id">Enter a user id:</label>
+                <input type="text" id="user_id" name="user_id" required />
+            </div>
+            <div class="btnContainer">
+                <button type="submit" class="btn">Submit</button>
+            </div>
+        </form>
         {% if error %}
             <div class="errorMsg">{{ error }}</div>
         {% endif %}
