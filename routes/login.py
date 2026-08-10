@@ -1,12 +1,14 @@
+"""Login routes for verifying user credentials."""
+import time
 from flask import Blueprint, render_template, redirect, url_for, request, session
 from models import User, UserRole
 from database import db
-import time
 
 login_bp = Blueprint('login', __name__)
 
 @login_bp.route("/login", methods=["GET", "POST"])
 def login():
+    """Authenticate user credentials and log in user."""
     if request.method == "GET":
         return render_template("login.html")
 
@@ -20,7 +22,7 @@ def login():
         # Check that all form data is present
         if not email or not password:
             return {"Error: Missing email or password."}, 400
-        
+
         # Secure code
         if security_choice == "hardened":
             # Set lockout time remaining
@@ -31,7 +33,11 @@ def login():
                 remaining = lockout_time - now
                 # HTTP 429 = "Too Many Requests" error
                 return render_template(
-                "login.html", error=f"Too many failed login attempts. Please try again in {remaining} seconds."
+                "login.html",
+                error=(
+                    "Too many failed login attempts. "
+                    f"Please try again in {remaining} seconds."
+                ),
             ), 429
             # After 30 seconds, reset lockout timer and failed attempt counter
             if lockout_time > 0 and lockout_time <= now:
@@ -61,14 +67,19 @@ def login():
             # Unsuccessful login = increment total_failed_logins
             total_failed_logins = session.get("total_failed_logins", 0) + 1
             session["total_failed_logins"] = total_failed_logins
-            
+
             if total_failed_logins >=3:
                 session["lockout_time_seconds"] = now + 30
                 remaining = session["lockout_time_seconds"] - now
                 return render_template(
-                "login.html", error=f"Too many failed login attempts. Please try again in {remaining} seconds."
+                "login.html",
+                error=(
+                    "Too many failed login attempts. "
+                    f"Please try again in {remaining} seconds."
+                ),
             ), 429
 
         return render_template(
             "login.html", error="Invalid email or password."
         ), 401
+    

@@ -1,3 +1,4 @@
+"""Admin routes for viewing user IDs as an admin."""
 from flask import Blueprint, render_template, redirect, url_for, request, session
 from sqlalchemy import text
 from models import User, Account
@@ -7,6 +8,7 @@ admin_bp = Blueprint('admin', __name__)
 
 @admin_bp.route("/admin")
 def admin():
+    """Search for user by user_id, should only be accessible to admins."""
     # User account specific hardening for Auth Bypass attacks
     if session.get("admin_hardened"):
         # Check user is logged in
@@ -18,7 +20,7 @@ def admin():
         current_user = db.session.get(User, current_user_id)
         if current_user.role.value != "admin":
             return render_template("access_denied.html"), 403
-    
+
     user_id = request.args.get("user_id")
     if user_id:
         stmt = f"SELECT * FROM users WHERE id = '{user_id}'"
@@ -36,12 +38,12 @@ def admin():
         return render_template(
             "admin.html", selected_user=user, accts=accts
         )
-    else:
-        if user_id:
-            # Send error message that id did not match user
-            return render_template(
-                "admin.html", error="No user exists with that id."
-            ), 400
-        else:
-            # Render initial page before user id selection by admin user
-            return render_template("admin.html")
+
+    if user_id:
+        # Send error message that id did not match user
+        return render_template(
+            "admin.html", error="No user exists with that id."
+        ), 400
+
+    # Render initial page before user id selection by admin user
+    return render_template("admin.html")

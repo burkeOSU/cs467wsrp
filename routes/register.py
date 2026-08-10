@@ -1,18 +1,19 @@
+"""Register routes for creating new users."""
 from flask import Blueprint, render_template, redirect, url_for, request, session
+from werkzeug.security import generate_password_hash
 from sqlalchemy import text
 from models import User, UserRole
-from werkzeug.security import generate_password_hash
 from database import db
 
 register_bp = Blueprint('register', __name__)
 
 @register_bp.route("/register", methods=["GET", "POST"])
 def register():
+    """Register new user."""
     if request.method == "GET":
         return render_template("register.html")
 
     if request.method == "POST":
-        security = request.form.get("security_choice")
         # case insensitive, delete spaces
         email = request.form.get("email").strip().lower()
         first_name = request.form.get("first_name")
@@ -46,7 +47,7 @@ def register():
 
 # Helper functions
 def register_insecure(email, first_name, last_name, role, password_hash):
-    # Insecure stmt that allows for SQL injection
+    """Insecure registration function that allows for SQL injection."""
     stmt = (
         "INSERT INTO users (email, first_name, last_name, role, "
         "password_hash)"
@@ -66,7 +67,7 @@ def register_insecure(email, first_name, last_name, role, password_hash):
 
 
 def register_secure(email, first_name, last_name, role, password_hash):
-    # Insecure stmt that allows for SQL injection
+    """Secure registration function that protects against SQL injection."""
     stmt = (
         "INSERT INTO users (email, first_name, last_name, role, "
         "password_hash)"

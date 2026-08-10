@@ -1,5 +1,7 @@
+"""Account routes for bank account creation and editing for user."""
 from flask import Blueprint, render_template, redirect, url_for, request, session
 from sqlalchemy import text
+from sqlalchemy.exc import SQLAlchemyError
 from models import Account
 from database import db
 
@@ -7,6 +9,7 @@ account_bp = Blueprint('account', __name__)
 
 @account_bp.route("/accounts", methods=["GET"])
 def accounts():
+    """Render accounts page and set security toggle."""
     security_choice = request.form.get("security_choice")
     # Set security toggle for Auth Bypass attack on /admin
     if security_choice == "vulnerable":
@@ -19,6 +22,7 @@ def accounts():
 
 @account_bp.route("/new_account", methods=["GET", "POST"])
 def new_account():
+    """Create new account for user."""
     # Ensure user is logged in before accessing this page
     if "user_id" not in session:
         return redirect(url_for("login.login"))
@@ -51,14 +55,15 @@ def new_account():
             return create_account_secure(data)
 
 
-@account_bp.route("/edit_account/<int:id>", methods=["GET", "POST"])
-def edit_account(id):
+@account_bp.route("/edit_account/<int:account_id>", methods=["GET", "POST"])
+def edit_account(account_id):
+    """Edit account for specified user using user_id."""
     # Ensure user is logged in before accessing this page
     if "user_id" not in session:
         return redirect(url_for("login.login"))
 
     # Get account with that id, check that it exists
-    account = db.session.get(Account, id)
+    account = db.session.get(Account, account_id)
     if account is None:
         return render_template("edit_account.html", error="Account not found."), 404
 
@@ -97,7 +102,7 @@ def edit_account(id):
                 acct=account,
                 success="Account successfully updated.",
                 security=security_choice)
-        except:
+        except SQLAlchemyError:
             db.session.rollback()
             return render_template(
                 "edit_account.html",
@@ -109,7 +114,7 @@ def edit_account(id):
 
 # Helper Functions
 def create_account_secure(account_data):
-    # Parameterized inputs to protect against SQL injection
+    """Create new account for user with hardened code to protect against SQL injection."""
     stmt = ("INSERT INTO accounts (name, number, balance, user_id)"
             "VALUES (:name, :number, :balance, :user_id)")
     try:
@@ -122,7 +127,7 @@ def create_account_secure(account_data):
         })
         db.session.commit()
         return redirect(url_for("account.accounts"))
-    except Exception:
+    except SQLAlchemyError:
         db.session.rollback()
         # Displays safer generic message instead of raw error msg
         return render_template(
@@ -133,7 +138,7 @@ def create_account_secure(account_data):
 
 
 def create_account_insecure(account_data):
-    # Allows for SQL injection
+    """Create new account for user with vulnerable code that allows for SQL injection."""
     stmt = (f"INSERT INTO accounts (name, number, balance, user_id)"
             f"VALUES ('{account_data['name']}', '{account_data['number']}', "
             f"{account_data['balance']}, {account_data['user_id']})")
@@ -142,7 +147,7 @@ def create_account_insecure(account_data):
         db.session.execute(text(stmt))
         db.session.commit()
         return redirect(url_for("account.accounts"))
-    except Exception as e:
+    except SQLAlchemyError as e:
         db.session.rollback()
         # Displays raw error message, giving valuable information to attacker
         return render_template(
