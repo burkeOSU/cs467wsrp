@@ -3,7 +3,7 @@
 {% block content %}
     <div class="mainSection">
         <form class="form" action="{{ url_for('toggle.toggle_sqli_blind') }}" method="post">
-            {{ toggle("hardened") if session["admin_hardened"] else toggle('vulnerable') }}
+            {{ toggle("hardened") if session.get("toggle_sqli_blind") == "hardened" else toggle("vulnerable") }}
             <div class="btnContainer">
                 <button type="submit" class="btn">
                     Set Mode

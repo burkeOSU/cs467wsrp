@@ -19,7 +19,6 @@ def admin():
             return render_template("access_denied.html", showHint=True), 403
 
     if request.method == "POST":
-        security_choice = request.form.get("security_choice")
         user_id = request.form.get("user_id")
         user = None
         
@@ -31,13 +30,13 @@ def admin():
                     400,
                 )
                 
+
+        if user_id:
+            stmt = f"SELECT * FROM users WHERE id = '{user_id}'"
+            result = db.session.execute(text(stmt))
+            user = result.fetchone()
         else:
-            if user_id:
-                stmt = f"SELECT * FROM users WHERE id = '{user_id}'"
-                result = db.session.execute(text(stmt))
-                user = result.fetchone()
-            else:
-                user = None
+            user = None
 
 
         if user:
