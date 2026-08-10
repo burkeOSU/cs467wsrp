@@ -12,6 +12,7 @@ def register():
         return render_template("register.html")
 
     if request.method == "POST":
+        security = request.form.get("security_choice")
         # case insensitive, delete spaces
         email = request.form.get("email").strip().lower()
         first_name = request.form.get("first_name")
