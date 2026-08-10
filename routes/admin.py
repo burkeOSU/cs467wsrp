@@ -18,6 +18,7 @@ def admin():
         if current_user.role.value != "admin":
             return render_template("access_denied.html", showHint=True), 403
 
+    security_choice = request.form.get("security_choice")
     user_id = request.args.get("user_id")
     if user_id:
         stmt = f"SELECT * FROM users WHERE id = '{user_id}'"
@@ -26,7 +27,8 @@ def admin():
     else:
         user = None
     # Secure code
-    # user = db.session.get(User, user_id) if user_id else None
+    if security_choice == "hardened":
+        user = db.session.get(User, user_id) if user_id else None
 
     if user:
         # If user was found with matching id, get their accounts and return
