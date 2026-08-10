@@ -1,3 +1,4 @@
+{% from "components/toggle.html" import toggle %}
 {% extends "base.html" %}
 {% block content %}
     <div class="mainSection">
@@ -10,7 +11,59 @@
                     <li>
                         Return to <a href="{{ url_for('account.accounts') }}">Accounts</a>
                     </li>
+                </ul>
             </div>
         </div>
     </div>
+    {% if showHint %}
+    {% include 'components/hint.html' %}
+    <div class="lowerSection">
+        <div id="hintContent" class="content">
+            <h2>Session Hijacking</h2>
+            <div class="directions">
+                <ul>
+                    <li>
+                        Inspect the page, go to the Application tab, click on the Cookies section,
+                        then select the session corresponding to the website.
+                    </li>
+                    <li>
+                        There will be a value corresponding to the session. Copy the part before
+                        the first period into the form below, then submit.
+                    </li>
+                </ul>
+                <form class="form" action="{{ url_for('attack.session_hijack') }}" method="post">
+                    {{ toggle(security) if security else toggle("vulnerable") }}
+                    <div class="formDiv">
+                        <label for="session_value">Session Value</label>
+                        <input type="text" id="session_value" name="session_value" />
+                    </div>
+                    <div class="btnContainer">
+                        <button type="submit" class="btn">Submit</button>
+                    </div>
+                </form>
+            </div>
+            {% if forged_cookie %}
+            <br/>
+            <div class="directions">
+                <ul>
+                    <li>
+                        Decoded session data: {{ decoded_value }}
+                    </li>
+                    <li>
+                        Forged cookie: {{ forged_cookie }}
+                    </li>
+                    <li>
+                        Replace the session value with the new forged cookie.
+                        Then, go back to <a href="{{ url_for('admin.admin') }}">Admin</a>.
+                        You should have access to the admin page now.
+                    </li>
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+        <div id="explainContent" class="content">
+            <p>This is explanation content.</p>
+        </div>
+    </div>
+    {% endif %}
 {% endblock content %}

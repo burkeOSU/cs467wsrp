@@ -9,6 +9,7 @@ from routes.admin import admin_bp
 from routes.account import account_bp
 from routes.register import register_bp
 from routes.toggle import toggle_bp
+from routes.attack import attack_bp
 
 # For env variables
 load_dotenv()
@@ -67,7 +68,7 @@ app.register_blueprint(admin_bp)
 app.register_blueprint(account_bp)
 app.register_blueprint(register_bp)
 app.register_blueprint(toggle_bp)
-
+app.register_blueprint(attack_bp)
 
 # Routes
 @app.route("/")

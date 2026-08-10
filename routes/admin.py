@@ -17,7 +17,7 @@ def admin():
         current_user_id = session.get('user_id')
         current_user = db.session.get(User, current_user_id)
         if current_user.role.value != "admin":
-            return render_template("access_denied.html"), 403
+            return render_template("access_denied.html", showHint=True), 403
     
     user_id = request.args.get("user_id")
     if user_id:
