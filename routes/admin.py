@@ -22,7 +22,7 @@ def admin():
     user_id = request.args.get("user_id")
     # Secure code
     if session.get("toggle_sqli_blind") == "hardened":
-        if not user_id.isdigit():
+        if user_id is not None and not user_id.isdigit():
             return (
                 render_template("admin.html", error="Invalid user ID, only numerical characters accepted."),
                 400,
