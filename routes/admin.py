@@ -21,8 +21,13 @@ def admin():
     security_choice = request.form.get("security_choice")
     user_id = request.args.get("user_id")
     # Secure code
-    if security_choice == "hardened":
-        user = db.session.get(User, user_id) if user_id else None
+    if session["toggle_sqli_blind"] = "hardened"
+        if not user_id.isdigit():
+            return (
+                render_template("admin.html", error="Invalid user ID, only numerical characters accepted."),
+                400,
+            )
+            
     else:
         if user_id:
             stmt = f"SELECT * FROM users WHERE id = '{user_id}'"

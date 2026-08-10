@@ -23,3 +23,14 @@ def toggle_misexc():
         session["toggle_misexc"] = "hardened"
 
     return redirect(url_for("register.register"))
+
+@toggle_bp.route("/toggle_sqli_blind", methods=["POST"])
+def toggle_sqli_blind():
+    # Get the selection from the user and set the session variable
+    security_choice = request.form.get("security_choice")
+    if security_choice == "vulnerable":
+        session["toggle_sqli_blind"] = "vulnerable"
+    else:
+        session["toggle_sqli_blind"] = "hardened"
+
+    return redirect(url_for("admin.admin"))
