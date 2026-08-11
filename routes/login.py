@@ -1,8 +1,10 @@
-from flask import Blueprint, render_template, redirect, url_for, request, session
-from models import User
-from database import db
+from flask import Blueprint, redirect, render_template, request, session, url_for
 
-login_bp = Blueprint('login', __name__)
+from database import db
+from models import User
+
+login_bp = Blueprint("login", __name__)
+
 
 @login_bp.route("/login", methods=["GET", "POST"])
 def login():
@@ -10,7 +12,6 @@ def login():
         return render_template("login.html")
 
     if request.method == "POST":
-
         # Get form data
         security_choice = request.form.get("security_choice")
         email = request.form.get("email")
@@ -21,7 +22,7 @@ def login():
             return (
                 render_template(
                     "login.html",
-                    error=f"Error: Missing email or password.",
+                    error="Error: Missing email or password.",
                     security_choice=security_choice,
                 ),
                 400,
@@ -47,9 +48,9 @@ def login():
             return (
                 render_template(
                     "login.html",
-                    error=f"Too many failed login attempts. The account is now locked.",
+                    error="Too many failed login attempts. The account is now locked.",
                     security_choice="hardened",
-                    locked=user.user_lockout
+                    locked=user.user_lockout,
                 ),
                 429,
             )
@@ -92,7 +93,7 @@ def reset_lockout():
                 "login.html",
                 error="Please enter a valid email.",
                 security_choice="hardened",
-                locked=True
+                locked=True,
             ),
             400,
         )
@@ -106,7 +107,7 @@ def reset_lockout():
                 "login.html",
                 error="Please enter a valid email.",
                 security_choice="hardened",
-                locked=True
+                locked=True,
             ),
             400,
         )

@@ -2,17 +2,13 @@
     <div class="toggleBtnContainer">
         <button class="toggleBtn {{ 'selected' if security == 'vulnerable' }}"
                 type="button"
-                data-value="vulnerable">
-                Vulnerable
-        </button>
+                data-value="vulnerable">Vulnerable</button>
         <button class="toggleBtn {{ 'selected' if security == 'hardened' }}"
                 type="button"
-                data-value="hardened">
-                Hardened
-        </button>
+                data-value="hardened">Hardened</button>
     </div>
     <input type="hidden"
-            id="securityChoice"
-            name="security_choice"
-            value="{{ security }}">
+           id="securityChoice"
+           name="security_choice"
+           value="{{ security }}">
 {% endmacro %}

@@ -3,33 +3,35 @@
 {% block content %}
     <div class="mainSection">
         <h1>Edit Account</h1>
-        <form class="form" action="{{ url_for('account.edit_account', id=acct.id) }}" method="post">
+        <form class="form"
+              action="{{ url_for('account.edit_account', id=acct.id) }}"
+              method="post">
             {{ toggle(security) if security else toggle("vulnerable") }}
             <div class="formDiv">
                 <label for="name">Name</label>
                 <input type="text"
-                        id="name"
-                        name="name"
-                        {% if security == "vulnerable" %}
-                            value={{ acct.name }}
-                        {% else %}
-                            value="{{ acct.name }}"
-                        {% endif %}
-                        required />
+                       id="name"
+                       name="name"
+                       {% if security == "vulnerable" %} value={{ acct.name }} {% else %} value="{{ acct.name }}" {% endif %}
+                       required />
             </div>
             <div class="formDiv">
                 <label for="number">Number</label>
-                <input type="text" id="number" name="number" value="{{ acct.number }}" required />
+                <input type="text"
+                       id="number"
+                       name="number"
+                       value="{{ acct.number }}"
+                       required />
             </div>
             <div class="formDiv">
                 <label for="balance">Balance</label>
                 <input type="number"
-                        step="0.01"
-                        min="0.00"
-                        id="balance"
-                        name="balance"
-                        value="{{ acct.balance }}"
-                        required />
+                       step="0.01"
+                       min="0.00"
+                       id="balance"
+                       name="balance"
+                       value="{{ acct.balance }}"
+                       required />
             </div>
             <div class="btnContainer">
                 <button type="submit" class="btn">Save</button>
@@ -53,9 +55,7 @@
                         <br>
                         admin onfocus=document.querySelector("h1").innerText="Hacked!" autofocus
                     </li>
-                    <li>
-                        Then look what happens to the header!
-                    </li>
+                    <li>Then look what happens to the header!</li>
                 </ul>
             </div>
         </div>
@@ -65,11 +65,8 @@
                 <ul>
                     <li>
                         See the
-                        <a
-                            href="https://github.com/burkeOSU/cs467wsrp/blob/main/docs/README_StoredXSS.md"
-                            target="blank">
-                            README
-                        </a>
+                        <a href="https://github.com/burkeOSU/cs467wsrp/blob/main/docs/README_StoredXSS.md"
+                           target="blank">README</a>
                         file for a detailed explanation.
                     </li>
                 </ul>

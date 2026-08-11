@@ -1,9 +1,11 @@
-from flask import Blueprint, render_template, redirect, url_for, request, session
+from flask import Blueprint, redirect, render_template, request, session, url_for
 from sqlalchemy import text
-from models import User, Account
-from database import db
 
-admin_bp = Blueprint('admin', __name__)
+from database import db
+from models import Account, User
+
+admin_bp = Blueprint("admin", __name__)
+
 
 @admin_bp.route("/admin", methods=["GET", "POST"])
 def admin():
@@ -21,15 +23,17 @@ def admin():
     if request.method == "POST":
         user_id = request.form.get("user_id")
         user = None
-        
+
         # Secure code
         if session.get("toggle_sqli_blind") == "hardened":
             if user_id is not None and not user_id.isdigit():
                 return (
-                    render_template("admin.html", error="Invalid user ID, only numerical characters accepted."),
+                    render_template(
+                        "admin.html",
+                        error="Invalid user ID, only numerical characters accepted.",
+                    ),
                     400,
                 )
-                
 
         if user_id:
             stmt = f"SELECT * FROM users WHERE id = '{user_id}'"
@@ -37,7 +41,6 @@ def admin():
             user = result.fetchone()
         else:
             user = None
-
 
         if user:
             # If user was found with matching id, get their accounts and return

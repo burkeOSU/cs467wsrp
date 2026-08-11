@@ -1,6 +1,8 @@
-from database import db
-from models import User, Account
+"""Generate example customer and admin users, example bank accounts."""
 from werkzeug.security import generate_password_hash
+
+from database import db
+from models import Account, User
 
 USERS = [
     {

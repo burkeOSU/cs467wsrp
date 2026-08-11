@@ -3,72 +3,67 @@
 {% block content %}
     <div class="mainSection">
         <h1>Register</h1>
-        <form action="{{ url_for('toggle.toggle_misexc') }}" method="post">
+        <form action="{{ url_for("toggle.toggle_misexc") }}" method="post">
             {{ toggle("hardened") if session.get("toggle_misexc") == "hardened" else toggle("vulnerable") }}
             <div class="btnContainer">
                 <button type="submit" class="btn sessionToggleBtn">Set Mode</button>
             </div>
         </form>
-        <form class="form" action="{{ url_for('register.register') }}" method="post">
+        <form class="form"
+              action="{{ url_for("register.register") }}"
+              method="post">
             <div class="formDiv">
                 <label for="email">Email</label>
                 <input type="email" id="email" name="email" required />
             </div>
-                <div class="formDiv">
-                    <label for="first_name">First Name</label>
-                    <input type="text" id="first_name" name="first_name" required />
-                </div>
-                <div class="formDiv">
-                    <label for="last_name">Last Name</label>
-                    <input type="text" id="last_name" name="last_name" required />
-                </div>
-                <div class="formDiv">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" required />
-                </div>
-                <div class="btnContainer">
-                    <button type="submit" class="btn">Submit</button>
-                </div>
-            </form>
-            {% if error %}
-                <div class="errorMsg">{{ error }}</div>
-            {% endif %}
-        </div>
-        {% include 'components/hint.html' %}
-        <div class="lowerSection">
-            <div id="hintContent" class="content">
-                <h2>Mishandled Exception</h2>
-                <div class="directions">
-                    <ul>
-                        <li>
-                            Enter the following in the First Name field:
-                            <br>
-                            Ex', 'Ample', 'pass', 1); #
-                        </li>
-                        <li>
-                            Fill out the remainder of the form, then submit.
-                        </li>
-                        <li>
-                            Inspect the error page to find a detailed hidden error message!
-                        </li>
-                    </ul>
-                </div>
+            <div class="formDiv">
+                <label for="first_name">First Name</label>
+                <input type="text" id="first_name" name="first_name" required />
             </div>
-            <div id="explainContent" class="content">
-                <h2>Mishandled Exception</h2>
-                <div class="directions">
-                    <ul>
-                        <li>
-                            See the
-                            <a
-                                href="https://github.com/burkeOSU/cs467wsrp/blob/main/docs/README_MisExcept.md"
-                                target="blank">
-                                README
-                            </a>
-                            file for a detailed explanation.
-                        </li>
-                    </ul>
-                </div>
+            <div class="formDiv">
+                <label for="last_name">Last Name</label>
+                <input type="text" id="last_name" name="last_name" required />
+            </div>
+            <div class="formDiv">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required />
+            </div>
+            <div class="btnContainer">
+                <button type="submit" class="btn">Submit</button>
+            </div>
+        </form>
+        {% if error %}
+            <div class="errorMsg">{{ error }}</div>
+        {% endif %}
+    </div>
+    {% include 'components/hint.html' %}
+    <div class="lowerSection">
+        <div id="hintContent" class="content">
+            <h2>Mishandled Exception</h2>
+            <div class="directions">
+                <ul>
+                    <li>
+                        Enter the following in the First Name field:
+                        <br>
+                        Ex', 'Ample', 'pass', 1); #
+                    </li>
+                    <li>Fill out the remainder of the form, then submit.</li>
+                    <li>Inspect the error page to find a detailed hidden error message!</li>
+                </ul>
             </div>
         </div>
+        <div id="explainContent" class="content">
+            <h2>Mishandled Exception</h2>
+            <div class="directions">
+                <ul>
+                    <li>
+                        See the
+                        <a href="https://github.com/burkeOSU/cs467wsrp/blob/main/docs/README_MisExcept.md"
+                           target="blank">README</a>
+                        file for a detailed explanation.
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
 {% endblock content %}

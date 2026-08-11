@@ -1,9 +1,11 @@
-from flask import Blueprint, render_template, redirect, url_for, request, session
+from flask import Blueprint, redirect, render_template, request, session, url_for
 from sqlalchemy import text
-from models import Account
-from database import db
 
-account_bp = Blueprint('account', __name__)
+from database import db
+from models import Account
+
+account_bp = Blueprint("account", __name__)
+
 
 @account_bp.route("/accounts", methods=["GET"])
 def accounts():
@@ -26,14 +28,17 @@ def new_account():
             "user_id": session.get("user_id"),
             "name": request.form.get("name"),
             "number": request.form.get("number"),
-            "balance": request.form.get("balance")
+            "balance": request.form.get("balance"),
         }
 
         # Check that all attributes are present
         if not data["name"] or not data["number"] or not data["balance"]:
-            return render_template(
-                "new_account.html", error="Missing one or more parameters."
-            ), 400
+            return (
+                render_template(
+                    "new_account.html", error="Missing one or more parameters."
+                ),
+                400,
+            )
 
         if security_choice == "vulnerable":
             # Allows for SQL injection to display informational error message
@@ -74,14 +79,18 @@ def edit_account(id):
 
         # Check that all attributes are present
         if not name or not number or not balance:
-            return render_template(
-                "edit_account.html", 
-                error="Missing one or more parameters.",
-                acct=account
-            ), 400
+            return (
+                render_template(
+                    "edit_account.html",
+                    error="Missing one or more parameters.",
+                    acct=account,
+                ),
+                400,
+            )
 
         try:
-            # SQLAlchemy ORM auto generates prepared stmt with parameterized inputs (protects against SQLi)
+            # SQLAlchemy ORM auto generates prepared stmt
+            # with parameterized inputs (protects against SQLi)
             account.name = name
             account.number = number
             account.balance = balance
@@ -90,15 +99,19 @@ def edit_account(id):
                 "edit_account.html",
                 acct=account,
                 success="Account successfully updated.",
-                security=security_choice)
+                security=security_choice,
+            )
         except:
             db.session.rollback()
-            return render_template(
-                "edit_account.html",
-                error="An error occurred updating the account.",
-                acct=account,
-                security=security_choice
-            ), 500
+            return (
+                render_template(
+                    "edit_account.html",
+                    error="An error occurred updating the account.",
+                    acct=account,
+                    security=security_choice,
+                ),
+                500,
+            )
 
 
 # Helper Functions
@@ -111,12 +124,12 @@ def create_account_secure(account_data):
     try:
         # Secure submitting parameterized data
         db.session.execute(
-            text(stmt), 
+            text(stmt),
             {
                 "name": account_data["name"],
                 "number": account_data["number"],
                 "balance": account_data["balance"],
-                "user_id": account_data["user_id"]
+                "user_id": account_data["user_id"],
             },
         )
         db.session.commit()
@@ -128,8 +141,8 @@ def create_account_secure(account_data):
             render_template(
                 "new_account.html",
                 error="An error occurred creating the new account.",
-                security="hardened"
-            ), 
+                security="hardened",
+            ),
             500,
         )
 
@@ -150,9 +163,6 @@ def create_account_insecure(account_data):
         db.session.rollback()
         # Displays raw error message, giving valuable information to attacker
         return (
-            render_template(
-                "new_account.html", 
-                error=str(e),
-                security="vulnerable"
-            ), 500
+            render_template("new_account.html", error=str(e), security="vulnerable"),
+            500,
         )
