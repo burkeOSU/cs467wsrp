@@ -32,8 +32,7 @@
                 <td>{{ acct.name }}</td>
                 <td>{{ acct.number }}</td>
                 <td>{{ acct.balance }}</td>
-                <td><a
-                        href="{{ url_for('account.edit_account', id=acct.id) }}">&#9998;</a></td>
+                <td><a href="{{ url_for('account.edit_account', id=acct.id) }}">&#9998;</a></td>
             </tr>
             {% endfor %}
             {% else %}
@@ -58,5 +57,14 @@
         </a>
     </div>
     {% endif %}
+</div>
+{% include 'components/hint.html' %}
+<div class="lowerSection">
+    <div id="hintContent" class="content">
+        <p>This is hint content.</p>
+    </div>
+    <div id="explainContent" class="content">
+        <p>This is explanation content.</p>
+    </div>
 </div>
 {% endblock content %}
