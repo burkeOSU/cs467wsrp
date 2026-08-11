@@ -144,6 +144,8 @@ p {
 
 .directions ul li {
     padding: 10px;
+    word-break: break-word;
+    overflow-wrap: break-word;
 }
 
 .warning {
