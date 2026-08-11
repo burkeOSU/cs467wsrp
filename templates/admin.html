@@ -1,7 +1,17 @@
+{% from "components/toggle.html" import toggle %}
 {% extends "base.html" %}
 {% block content %}
     <div class="mainSection">
-        <form class="form" action="{{ url_for('admin.admin') }}" method="get">
+        <form class="form" action="{{ url_for('toggle.toggle_sqli_blind') }}" method="post">
+            {{ toggle("hardened") if session.get("toggle_sqli_blind") == "hardened" else toggle("vulnerable") }}
+            <div class="btnContainer">
+                <button type="submit" class="btn">
+                    Set Mode
+                </button>
+            </div>
+        </form>
+
+        <form class="form" action="{{ url_for('admin.admin') }}" method="post">
             <div class="formDiv">
                 <label for="user_id">Enter a user id:</label>
                 <input type="text" id="user_id" name="user_id" required />
