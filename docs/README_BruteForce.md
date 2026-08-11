@@ -47,18 +47,16 @@ Entering this password with the email address should successfully log in to the 
 ## Code Vulnerability
 The login authorization checks if the user and password match; if they do not match, the error message "Invalid email or password." appears:
 ```python
-        # Validate password if user exists
-        if user and user.check_password(password):
-            session["user_id"] = user.id
-            session["user_fname"] = user.first_name
-            if user.role == UserRole.ADMIN:
-                return redirect(url_for('admin.admin'))
-            else:
-                return redirect(url_for('account.accounts'))
+# Validate password if user exists
+if user and user.check_password(password):
+    session["user_id"] = user.id
+    session["user_fname"] = user.first_name
+    if user.role == UserRole.ADMIN:
+        return redirect(url_for("admin.admin"))
+    else:
+        return redirect(url_for("account.accounts"))
 
-        return render_template(
-            "login.html", error="Invalid email or password."
-        ), 401
+return render_template("login.html", error="Invalid email or password."), 401
 ```
 However, there is no penalty for performing unsuccessful logins multiple times. Because of this, a program like BurpSuite can input multiple passwords consecutively until a match is found.
 

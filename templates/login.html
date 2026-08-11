@@ -1,50 +1,48 @@
 {% from "components/toggle.html" import toggle %}
 {% extends "base.html" %}
 {% block content %}
-<div class="mainSection">
-    <h1>Login</h1>
-    <form class="form" action="{{ url_for('login.login') }}" method="post">
-        {{ toggle(security) if security else toggle("vulnerable") }}
-        <div class="formDiv">
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" required />
-        </div>
-        <div class="formDiv">
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password" required />
-        </div>
-        <div class="btnContainer">
-            <button type="submit" class="btn">Sign In</button>
-        </div>
-    </form>
-    {% if error %}
-    <div class="errorMsg">{{ error }}</div>
+    <div class="mainSection">
+        <h1>Login</h1>
+        <form class="form" action="{{ url_for("login.login") }}" method="post">
+            {{ toggle(security) if security else toggle("vulnerable") }}
+            <div class="formDiv">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required />
+            </div>
+            <div class="formDiv">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required />
+            </div>
+            <div class="btnContainer">
+                <button type="submit" class="btn">Sign In</button>
+            </div>
+        </form>
+        {% if error %}
+            <div class="errorMsg">{{ error }}</div>
+        {% endif %}
+    </div>
+    {% if locked %}
+        <form class="form"
+              action="{{ url_for("login.reset_lockout") }}"
+              method="post">
+            <div class="formDiv">
+                <label for="reset_lockout_email">Email</label>
+                <input type="email" id="reset_lockout_email" name="email" required />
+            </div>
+            <div class="btnContainer">
+                <button type="submit" class="btn">Reset Lockout</button>
+            </div>
+        </form>
     {% endif %}
-</div>
-{% if locked %}
-<form class="form" action="{{ url_for('login.reset_lockout') }}" method="post">
-    <div class="formDiv">
-        <label for="reset_lockout_email">Email</label>
-        <input type="email" id="reset_lockout_email" name="email" required />
     </div>
-    <div class="btnContainer">
-        <button type="submit" class="btn">Reset Lockout</button>
-    </div>
-</form>
-{% endif %}
-</div>
     {% include 'components/hint.html' %}
     <div class="lowerSection">
         <div id="hintContent" class="content">
             <h2>Brute Force</h2>
             <div class="directions">
                 <ul>
-                    <li>
-                        If at first you don't succeed, try [a password] and try [and try and try...] again.
-                    </li>
-                    <li>
-                        (The rockyou.txt file and BurpSuite program are particularly helpful here.)
-                    </li>
+                    <li>If at first you don't succeed, try [a password] and try [and try and try...] again.</li>
+                    <li>(The rockyou.txt file and BurpSuite program are particularly helpful here.)</li>
                 </ul>
             </div>
         </div>
@@ -54,11 +52,8 @@
                 <ul>
                     <li>
                         See the
-                        <a
-                            href="https://github.com/burkeOSU/cs467wsrp/blob/main/docs/README_BruteForce.md"
-                            target="blank">
-                            README
-                        </a>
+                        <a href="https://github.com/burkeOSU/cs467wsrp/blob/main/docs/README_BruteForce.md"
+                           target="blank">README</a>
                         file for a detailed explanation.
                     </li>
                 </ul>

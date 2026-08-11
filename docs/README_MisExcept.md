@@ -57,10 +57,7 @@ can also gain information from it.
 def handle_exception(e):
     detailed_error = getattr(e, "original_exception", e)
 
-    return render_template(
-        "error_500.html",
-        error_message=str(detailed_error)
-    ), 500
+    return render_template("error_500.html", error_message=str(detailed_error)), 500
 ```
 
 ## Code Improvement
@@ -69,32 +66,32 @@ triggered by saving to the database are caught and properly handled,
 without revealing sensitive information about the database.
 
 ```python
-    # Insecure stmt that allows for SQL injection
-    stmt = (
-        "INSERT INTO users (email, first_name, last_name, role, "
-        "password_hash)"
-        f"VALUES ('{email}', '{first_name}', '{last_name}', '{role}', "
-        f"'{password_hash}')"
-    )
-    # Try/except block to gracefully handle any exceptions
-    try:
-        # Send constructed stmt to database to register user
-        result = db.session.execute(text(stmt))
-        db.session.commit()
-        # Retrieve newly created user info to set session variables
-        new_user_id = result.lastrowid
-        user = db.session.get(User, new_user_id)
-        session["user_id"] = user.id
-        session["user_fname"] = user.first_name
-        return redirect(url_for("account.accounts"))
-    except BaseException:
-        db.session.rollback()
-        # Appropriate generic error message is displayed back to user
-        return render_template(
-            "register.html",
-            error="An error occurred creating the new user.",
-            security="hardened"
-        ), 500
+# Insecure stmt that allows for SQL injection
+stmt = (
+    "INSERT INTO users (email, first_name, last_name, role, "
+    "password_hash)"
+    f"VALUES ('{email}', '{first_name}', '{last_name}', '{role}', "
+    f"'{password_hash}')"
+)
+# Try/except block to gracefully handle any exceptions
+try:
+    # Send constructed stmt to database to register user
+    result = db.session.execute(text(stmt))
+    db.session.commit()
+    # Retrieve newly created user info to set session variables
+    new_user_id = result.lastrowid
+    user = db.session.get(User, new_user_id)
+    session["user_id"] = user.id
+    session["user_fname"] = user.first_name
+    return redirect(url_for("account.accounts"))
+except BaseException:
+    db.session.rollback()
+    # Appropriate generic error message is displayed back to user
+    return render_template(
+        "register.html",
+        error="An error occurred creating the new user.",
+        security="hardened",
+    ), 500
 ```
 Additionally, the error handler function for 500 status code should render
 without including the error message in the comments to protect the app in
@@ -103,9 +100,7 @@ production.
 ```python
 @app.errorhandler(500)
 def handle_exception(e):
-    return render_template(
-        "error_500.html"
-    ), 500
+    return render_template("error_500.html"), 500
 ```
 
 ## Retesting Result

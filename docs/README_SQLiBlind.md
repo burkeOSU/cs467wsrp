@@ -34,11 +34,13 @@ The line does not discriminate on character length or type, so characters and ph
 The hardened code provides an if statement that filters out all statements that contain any characters that aren't numerical. These statements instead return the error message "Invalid user ID, only numerical characters accepted."
 
 ```python
-            if user_id is not None and not user_id.isdigit():
-                return (
-                    render_template("admin.html", error="Invalid user ID, only numerical characters accepted."),
-                    400,
-                )
+if user_id is not None and not user_id.isdigit():
+    return (
+        render_template(
+            "admin.html", error="Invalid user ID, only numerical characters accepted."
+        ),
+        400,
+    )
 ```
 The results are no longer Boolean, thanks to the introduction of an invalid result.
 ## Retesting Result

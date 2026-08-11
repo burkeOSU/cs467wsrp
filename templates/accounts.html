@@ -1,75 +1,67 @@
 {% from "components/toggle.html" import toggle %}
 {% extends "base.html" %}
 {% block content %}
-<div class="mainSection">
-    {% if current_user %}
-    <h1>{{ current_user.first_name }}'s Accounts</h1>
-    {% else %}
-    <h1>Example's Accounts</h1>
-    {% endif %}
-    <form action="{{ url_for('toggle.toggle_auth_bypass') }}" method="post">
-        {{ toggle("hardened") if session["admin_hardened"] else toggle('vulnerable') }}
-        <div class="btnContainer">
-            <button type="submit" class="btn">
-                Set Mode
-            </button>
-        </div>
-    </form>
-    <table class="acctTable">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Acct Number</th>
-                <th>Balance</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            {% if current_user %}
-            <!-- Data for currently logged in user -->
-            {% for acct in current_user.account %}
-            <tr>
-                <td>{{ acct.name }}</td>
-                <td>{{ acct.number }}</td>
-                <td>{{ acct.balance }}</td>
-                <td><a href="{{ url_for('account.edit_account', id=acct.id) }}">&#9998;</a></td>
-            </tr>
-            {% endfor %}
-            {% else %}
-            <!-- Example data to display when no user is logged in -->
-            <tr>
-                <td>Bank 1</td>
-                <td>1480</td>
-                <td>100.00</td>
-            </tr>
-            <tr>
-                <td>Bank 2</td>
-                <td>2467</td>
-                <td>120.00</td>
-            </tr>
-            {% endif %}
-        </tbody>
-    </table>
-    {% if current_user %}
-    <div class="btnContainer">
-        <a href="{{ url_for('account.new_account') }}" class="btn">
-            New Account
-        </a>
+    <div class="mainSection">
+        {% if current_user %}
+            <h1>{{ current_user.first_name }}'s Accounts</h1>
+        {% else %}
+            <h1>Example's Accounts</h1>
+        {% endif %}
+        <form action="{{ url_for("toggle.toggle_auth_bypass") }}" method="post">
+            {{ toggle("hardened") if session["admin_hardened"] else toggle('vulnerable') }}
+            <div class="btnContainer">
+                <button type="submit" class="btn">Set Mode</button>
+            </div>
+        </form>
+        <table class="acctTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Acct Number</th>
+                    <th>Balance</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if current_user %}
+                    <!-- Data for currently logged in user -->
+                    {% for acct in current_user.account %}
+                        <tr>
+                            <td>{{ acct.name }}</td>
+                            <td>{{ acct.number }}</td>
+                            <td>{{ acct.balance }}</td>
+                            <td><a href="{{ url_for('account.edit_account', id=acct.id) }}">&#9998;</a></td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <!-- Example data to display when no user is logged in -->
+                    <tr>
+                        <td>Bank 1</td>
+                        <td>1480</td>
+                        <td>100.00</td>
+                    </tr>
+                    <tr>
+                        <td>Bank 2</td>
+                        <td>2467</td>
+                        <td>120.00</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+        {% if current_user %}
+            <div class="btnContainer">
+                <a href="{{ url_for("account.new_account") }}" class="btn">New Account</a>
+            </div>
+        {% endif %}
     </div>
-    {% endif %}
-</div>
     {% include 'components/hint.html' %}
     <div class="lowerSection">
         <div id="hintContent" class="content">
             <h2>Authorization Bypass</h2>
             <div class="directions">
                 <ul>
-                    <li>
-                        Is there a way for you to get from /accounts to /admin ?
-                    </li>
-                    <li>
-                        No external tools required here! Just copy-paste and enter!
-                    </li>
+                    <li>Is there a way for you to get from /accounts to /admin ?</li>
+                    <li>No external tools required here! Just copy-paste and enter!</li>
                 </ul>
             </div>
         </div>
@@ -79,11 +71,8 @@
                 <ul>
                     <li>
                         See the
-                        <a
-                            href="https://github.com/burkeOSU/cs467wsrp/blob/main/docs/README_AuthBypass.md"
-                            target="blank">
-                            README
-                        </a>
+                        <a href="https://github.com/burkeOSU/cs467wsrp/blob/main/docs/README_AuthBypass.md"
+                           target="blank">README</a>
                         file for a detailed explanation.
                     </li>
                 </ul>

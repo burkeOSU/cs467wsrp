@@ -15,7 +15,7 @@ The raw SQL statement to insert a new account in the database was not properly
 sanitized and directly concatinated, such that the injection was run as code and executed.
 
 ```python
-stmt = (f"INSERT INTO accounts (name, number, balance, user_id) VALUES ('{name}', '{number}', {balance}, {user_id})")
+stmt = f"INSERT INTO accounts (name, number, balance, user_id) VALUES ('{name}', '{number}', {balance}, {user_id})"
 
 db.session.execute(text(stmt))
 ```
@@ -33,9 +33,11 @@ such that the form value from the user will be treated as a literal value, inclu
 any injected code.
 
 ```python
-stmt = (f"INSERT INTO accounts (name, number, balance, user_id) VALUES (:name, :number, :balance, :user_id)")
+stmt = f"INSERT INTO accounts (name, number, balance, user_id) VALUES (:name, :number, :balance, :user_id)"
 
-db.session.execute(text(stmt), {"name": name, "number": number, "balance": balance, "user_id": user_id})
+db.session.execute(
+    text(stmt), {"name": name, "number": number, "balance": balance, "user_id": user_id}
+)
 ```
 
 Also, the error message was modified to a standard generic message:

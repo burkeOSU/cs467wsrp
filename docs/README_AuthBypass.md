@@ -34,13 +34,13 @@ def admin():
 ```
 Additionally after checking the login status, it checks the user's role. If the user is not an admin, they are redirected to the Access Denied page:
 ```python
-    # Check user role is admin
-    current_user_id = session.get('user_id')
-    current_user = db.session.get(User, current_user_id)
-    if current_user.role.value != "admin":
-        return render_template("access_denied.html"), 403
-    
-    user_id = request.args.get("user_id")
+# Check user role is admin
+current_user_id = session.get("user_id")
+current_user = db.session.get(User, current_user_id)
+if current_user.role.value != "admin":
+    return render_template("access_denied.html"), 403
+
+user_id = request.args.get("user_id")
 ```
 
 ## Retesting Result
