@@ -1,62 +1,88 @@
 {% from "components/toggle.html" import toggle %}
 {% extends "base.html" %}
 {% block content %}
-    <div class="mainSection">
-        <form class="form" action="{{ url_for('toggle.toggle_sqli_blind') }}" method="post">
-            {{ toggle("hardened") if session.get("toggle_sqli_blind") == "hardened" else toggle("vulnerable") }}
-            <div class="btnContainer">
-                <button type="submit" class="btn">
-                    Set Mode
-                </button>
-            </div>
-        </form>
+<div class="mainSection">
+    <form action="{{ url_for('toggle.toggle_sqli_blind') }}" method="post">
+        {{ toggle("hardened") if session.get("toggle_sqli_blind") == "hardened" else toggle("vulnerable") }}
+        <div class="btnContainer">
+            <button type="submit" class="btn">
+                Set Mode
+            </button>
+        </div>
+    </form>
 
-        <form class="form" action="{{ url_for('admin.admin') }}" method="post">
-            <div class="formDiv">
-                <label for="user_id">Enter a user id:</label>
-                <input type="text" id="user_id" name="user_id" required />
-            </div>
-            <div class="btnContainer">
-                <button type="submit" class="btn">Submit</button>
-            </div>
-        </form>
-        {% if error %}
-            <div class="errorMsg">{{ error }}</div>
-        {% endif %}
-        {% if selected_user %}
-            <h1>{{ selected_user.first_name }}'s Accounts</h1>
-        {% endif %}
-        {% if accts %}
-            <table class="acctTable">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Acct Number</th>
-                        <th>Balance</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for acct in accts %}
-                        <tr>
-                            <td>{{ acct.name }}</td>
-                            <td>{{ acct.number }}</td>
-                            <td>{{ acct.balance }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        {% endif %}
-        {% if selected_user and not accts %}
-            <p>No account data for this user.</p>
-        {% endif %}
-    </div>
+    <form class="form" action="{{ url_for('admin.admin') }}" method="post">
+        <div class="formDiv">
+            <label for="user_id">Enter a user id:</label>
+            <input type="text" id="user_id" name="user_id" required />
+        </div>
+        <div class="btnContainer">
+            <button type="submit" class="btn">Submit</button>
+        </div>
+    </form>
+    {% if error %}
+    <div class="errorMsg">{{ error }}</div>
+    {% endif %}
+    {% if selected_user %}
+    <h1>{{ selected_user.first_name }}'s Accounts</h1>
+    {% endif %}
+    {% if accts %}
+    <table class="acctTable">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Acct Number</th>
+                <th>Balance</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for acct in accts %}
+            <tr>
+                <td>{{ acct.name }}</td>
+                <td>{{ acct.number }}</td>
+                <td>{{ acct.balance }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+    {% if selected_user and not accts %}
+    <p>No account data for this user.</p>
+    {% endif %}
+</div>
     {% include 'components/hint.html' %}
     <div class="lowerSection">
         <div id="hintContent" class="content">
-            <p>This is hint content.</p>
+            <h2>Blind SQL Injection</h2>
+            <div class="directions">
+                <ul>
+                    <li>
+                        So you enter a number, and either see information, or you don't.
+                    </li>
+                    <li>
+                        Sometimes a True or False reponse tells you more than you expect.
+                    </li>
+                    <li>
+                        (Try entering "2' AND'2'='2'#",  then "2' AND'2'='3'#", then lookup sqlmap.)
+                    </li>
+                </ul>
+            </div>
         </div>
         <div id="explainContent" class="content">
-            <p>This is explanation content.</p>
+            <h2>Blind SQL Injection</h2>
+            <div class="directions">
+                <ul>
+                    <li>
+                        See the
+                        <a
+                            href="https://github.com/burkeOSU/cs467wsrp/blob/main/docs/README_SQLiBlind.md"
+                            target="blank">
+                            README
+                        </a>
+                        file for a detailed explanation.
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
 {% endblock content %}
