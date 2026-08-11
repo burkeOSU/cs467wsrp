@@ -7,7 +7,7 @@
     {% else %}
     <h1>Example's Accounts</h1>
     {% endif %}
-    <form class="form" action="{{ url_for('toggle.toggle_auth_bypass') }}" method="post">
+    <form action="{{ url_for('toggle.toggle_auth_bypass') }}" method="post">
         {{ toggle("hardened") if session["admin_hardened"] else toggle('vulnerable') }}
         <div class="btnContainer">
             <button type="submit" class="btn">
@@ -58,13 +58,36 @@
     </div>
     {% endif %}
 </div>
-{% include 'components/hint.html' %}
-<div class="lowerSection">
-    <div id="hintContent" class="content">
-        <p>This is hint content.</p>
+    {% include 'components/hint.html' %}
+    <div class="lowerSection">
+        <div id="hintContent" class="content">
+            <h2>Authorization Bypass</h2>
+            <div class="directions">
+                <ul>
+                    <li>
+                        Is there a way for you to get from /accounts to /admin ?
+                    </li>
+                    <li>
+                        No external tools required here! Just copy-paste and enter!
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div id="explainContent" class="content">
+            <h2>Authorization Bypass</h2>
+            <div class="directions">
+                <ul>
+                    <li>
+                        See the
+                        <a
+                            href="https://github.com/burkeOSU/cs467wsrp/blob/main/docs/README_AuthBypass.md"
+                            target="blank">
+                            README
+                        </a>
+                        file for a detailed explanation.
+                    </li>
+                </ul>
+            </div>
+        </div>
     </div>
-    <div id="explainContent" class="content">
-        <p>This is explanation content.</p>
-    </div>
-</div>
 {% endblock content %}

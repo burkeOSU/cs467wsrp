@@ -50,13 +50,39 @@
     <p>No account data for this user.</p>
     {% endif %}
 </div>
-{% include 'components/hint.html' %}
-<div class="lowerSection">
-    <div id="hintContent" class="content">
-        <p>This is hint content.</p>
+    {% include 'components/hint.html' %}
+    <div class="lowerSection">
+        <div id="hintContent" class="content">
+            <h2>Blind SQL Injection</h2>
+            <div class="directions">
+                <ul>
+                    <li>
+                        So you enter a number, and either see information, or you don't.
+                    </li>
+                    <li>
+                        Sometimes a True or False reponse tells you more than you expect.
+                    </li>
+                    <li>
+                        (Try entering "2' AND'2'='2'#",  then "2' AND'2'='3'#", then lookup sqlmap.)
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div id="explainContent" class="content">
+            <h2>Blind SQL Injection</h2>
+            <div class="directions">
+                <ul>
+                    <li>
+                        See the
+                        <a
+                            href="https://github.com/burkeOSU/cs467wsrp/blob/main/docs/README_SQLiBlind.md"
+                            target="blank">
+                            README
+                        </a>
+                        file for a detailed explanation.
+                    </li>
+                </ul>
+            </div>
+        </div>
     </div>
-    <div id="explainContent" class="content">
-        <p>This is explanation content.</p>
-    </div>
-</div>
 {% endblock content %}

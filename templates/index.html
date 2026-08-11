@@ -22,4 +22,36 @@
             </div>
         </div>
     </div>
+    {% include 'components/hint.html' %}
+    <div class="lowerSection">
+        <div id="hintContent" class="content">
+            <h2>Attack Hints</h2>
+            <div class="directions">
+                <ul>
+                    <li>
+                        The Attack Hint button will display the name of the attack you should attempt, as well as a clue to perform it.
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div id="explainContent" class="content">
+            <h2>Explanations</h2>
+            <div class="directions">
+                <ul>
+                    <li>
+                        The Explanation button will provide a link to the page and attack's README documentation.
+                    </li>
+                    <li>
+                        The README will provide information on how to perform the attack,
+                    </li>
+                    <li>
+                        the vulnerable code that allows the attack to occur,
+                    </li>
+                    <li>
+                        and how the hardened code prevents the attack from occuring again.
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
 {% endblock content %}
