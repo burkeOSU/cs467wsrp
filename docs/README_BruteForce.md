@@ -61,55 +61,71 @@ return render_template("login.html", error="Invalid email or password."), 401
 However, there is no penalty for performing unsuccessful logins multiple times. Because of this, a program like BurpSuite can input multiple passwords consecutively until a match is found.
 
 ## Code Improvement
-The code was modified to include a lockout time of 30 seconds if 3 or more login attempts occur.
+The code was modified to include a lockout if 3 or more login attempts occur.
 
-If a unsuccessful login is performed, a counter for total_failed_logins is incremented by 1. If the counter reaches 3 or more failed attempts, the lockout timer lockout_time_seconds is set to the current time plus 30 seconds, the remaining time is calculated by the lockout timer minus the current time, and the error message "Too many failed login attempts. Please try again in {remaining} seconds." appears, where {remaining} is the remaining time.
+If a unsuccessful login is performed, a counter for total_failed_logins is incremented by 1. If the counter reaches 3 or more failed attempts, the user_lockout is set to True, and the error message "Too many failed login attempts. The account is now locked." appears.
 
 ```python
-# Unsuccessful login = increment total_failed_logins
-        total_failed_logins = session.get("total_failed_logins", 0) + 1
-        session["total_failed_logins"] = total_failed_logins
-        
-        if total_failed_logins >=3:
-            session["lockout_time_seconds"] = now + 30
-            remaining = session["lockout_time_seconds"] - now
-            return render_template(
-            "login.html", error=f"Too many failed login attempts. Please try again in {remaining} seconds."
-        ), 429
+            if security_choice == "hardened":
+                # Unsuccessful login = increment total_failed_logins
+                user.total_failed_logins += 1
+                if user.total_failed_logins >= 3:
+                    user.user_lockout = True
+                db.session.commit()
 ```
-The remaining time before the user can login again is checked every subsequent login attempt is made, showing the same error message if the lockout_time is greater than the current time (in other words, if the lockout timer is set).
+All subsequent login attempts will show this error message.
 ```python
- # Set lockout time remaining
-        now = int(time.time())
-        lockout_time = session.get("lockout_time_seconds", 0)
+        # Check user is lockedout before checking password
+        if security_choice == "hardened" and user.user_lockout:
+            # Permanent lockout
+            return (
+                render_template(
+                    "login.html",
+                    error="Too many failed login attempts. The account is now locked.",
+                    security_choice="hardened",
+                    locked=user.user_lockout,
+                ),
+                429,
+            )
+```
+Finally, for educational purposes a "Reset Lockout" button is also included to allow the user to reset the email address that was locked, so they can test the vulnerable/hardened code again.
+```python
+def reset_lockout():
+    # Reset lockout for account/email
+    email = request.form.get("email")
 
-        if lockout_time > now:
-            remaining = lockout_time - now
-            # HTTP 429 = "Too Many Requests" error
-            return render_template(
-            "login.html", error=f"Too many failed login attempts. Please try again in {remaining} seconds."
-        ), 429
-```
-When 30 seconds have passed, the failed login count and lockout timer are reset to 0.
-```python
-        # After 30 seconds, reset lockout timer and failed attempt counter
-        if lockout_time > 0 and lockout_time <= now:
-            session["total_failed_logins"] = 0
-            session["lockout_time_seconds"] = 0
-```
-Finally if a successful login was performed, then the failed login count and lockout timer are reset to 0.
-```python
-        # Validate password if user exists
-        if user and user.check_password(password):
-            session["user_id"] = user.id
-            session["user_fname"] = user.first_name
-            # Successful login = reset lockout parameters
-            session["total_failed_logins"] = 0
-            session["lockout_time_seconds"] = 0
+    # Missing email
+    if not email:
+        return (
+            render_template(
+                "login.html",
+                error="Please enter a valid email.",
+                security_choice="hardened",
+                locked=True,
+            ),
+            400,
+        )
+
+    user = db.session.scalars(db.select(User).where(User.email == email)).first()
+
+    # Invalid email
+    if not user:
+        return (
+            render_template(
+                "login.html",
+                error="Please enter a valid email.",
+                security_choice="hardened",
+                locked=True,
+            ),
+            400,
+        )
+
+    # Reset lockout
+    user.user_lockout = False
+    user.total_failed_logins = 0
+    db.session.commit()
 ```
 
 ## Retesting Result
-Now when the email and an incorrect password is submitted 3 times, the message "Too many failed login attempts. Please try again in 30 seconds." appears. Even if the correct password is inputted during the lockout, the user cannot log in until the lockout timer expires.
+Now when the email and an incorrect password is submitted 3 times, the message "Too many failed login attempts. The account is now locked. appears. Even if the correct password is inputted during the lockout, the user cannot log in unless the "Reset Lockout" button is used.
  ![Alt text](./screenshots/BruteForce/BruteForceRetest1.png)
-While this example locks out the user for 30 seconds, this value can be increased, greatly hindering an attackers brute force progress.
-
