@@ -10,7 +10,7 @@ admin_bp = Blueprint("admin", __name__)
 @admin_bp.route("/admin", methods=["GET", "POST"])
 def admin():
     # User account specific hardening for Auth Bypass attacks
-    if session.get("admin_hardened", True):
+    if session.get("admin_hardened", False):
         # Check user is logged in
         if "user_id" not in session:
             return redirect(url_for("login.login"))
